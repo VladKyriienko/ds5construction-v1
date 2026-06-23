@@ -1,0 +1,74 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PublicLayout from '../../layouts/PublicLayout.astro';
+import Section from '../../components/Section.astro';
+import QuoteButton from '../../components/QuoteButton.astro';
+import { buildPageMetadata } from '../../lib/metadata';
+import { IMAGE_SIZES } from '../../config/siteConfig';
+import { getServicesWithCleanDescription } from '../../utils/data';
+
+const metadata = buildPageMetadata({
+  title: 'Our Services – DS5 Construction',
+  description:
+    'House extensions, loft conversions, new builds, renovations, kitchen and bathroom projects. Professional construction services.',
+  path: 'our-services',
+  image: '/photo/9-2.webp',
+});
+
+const PAGE_INTRO = {
+  title: 'Our Services',
+  description:
+    'At DS5 Construction Ltd, we deliver residential and commercial construction services across London, managing projects from initial planning through to completion. Our work is based on practical site experience, technical coordination and consistent delivery at every stage.',
+};
+
+const { title, description } = PAGE_INTRO;
+const services = getServicesWithCleanDescription();
+---
+
+<BaseLayout metadata={metadata}>
+  <PublicLayout title={title} description={description} showHeader showFooter>
+    <Section>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {
+          services.map((service, index) => (
+            <div data-animate-on-scroll data-delay={index * 60}>
+              <a
+                href={`/our-services/${service.slug}`}
+                class="group flex flex-col rounded-lg overflow-hidden border bg-card hover:shadow-md transition-shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-ring h-full"
+              >
+                <div class="relative aspect-4/3 w-full overflow-hidden bg-muted shrink-0">
+                  <img
+                    src={
+                      service.image &&
+                      (service.image.startsWith('/') || service.image.startsWith('http'))
+                        ? service.image
+                        : '/photo/9-2.webp'
+                    }
+                    alt={service.title}
+                    width="440"
+                    height="330"
+                    class="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    sizes={IMAGE_SIZES.thirdGrid}
+                    loading={index === 0 ? 'eager' : 'lazy'}
+                  />
+                </div>
+                <div class="p-4 flex flex-col flex-1">
+                  <h3 class="font-semibold uppercase text-foreground group-hover:text-primary transition-colors">
+                    {service.shortTitle}
+                  </h3>
+                  <p class="text-sm text-muted-foreground mt-2 line-clamp-2 flex-1">
+                    {service.cleanDescription}
+                  </p>
+                  <span class="text-sm font-medium uppercase text-primary mt-3">Read more</span>
+                </div>
+              </a>
+            </div>
+          ))
+        }
+      </div>
+      <div class="mt-12 flex justify-center">
+        <QuoteButton />
+      </div>
+    </Section>
+  </PublicLayout>
+</BaseLayout>

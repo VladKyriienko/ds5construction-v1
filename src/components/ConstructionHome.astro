@@ -1,0 +1,177 @@
+---
+import { Image } from 'astro:assets';
+import { HERO_IMAGE, heroImageSrc } from '../utils/hero-image';
+import QuoteButton from './QuoteButton.astro';
+import Button from './common/Button.astro';
+import HaveAQuestionSection from './HaveAQuestionSection.astro';
+import HomeServicesCarousel from './HomeServicesCarousel.astro';
+import ProjectCard from './ProjectCard.astro';
+import Section from './Section.astro';
+import SectionGrid from './SectionGrid.astro';
+import Testimonials from './Testimonials.astro';
+import WhyWorkWithUs from './WhyWorkWithUs.astro';
+import { ANIMATIONS_ENABLED, IMAGE_SIZES } from '../config/siteConfig';
+import { cn } from '../utils/cn';
+import type { ConstructionHomeProps } from '../types';
+
+interface Props extends ConstructionHomeProps {}
+
+const { projects, services, googleReviews = null } = Astro.props;
+const STAGGER_DELAY_MS = 80;
+---
+
+<div>
+  <section class="container mx-auto pt-4">
+    <div class="relative w-full h-[66.67vh] min-h-[300px] overflow-hidden">
+      <Image
+        src={heroImageSrc}
+        alt="DS5 Construction - High-end property renovations"
+        widths={[...HERO_IMAGE.widths]}
+        width={HERO_IMAGE.width}
+        height={HERO_IMAGE.height}
+        quality={HERO_IMAGE.quality}
+        class="absolute inset-0 h-full w-full object-cover object-center"
+        loading="eager"
+        fetchpriority="high"
+        decoding="sync"
+        sizes={HERO_IMAGE.sizes}
+      />
+      <div
+        class="absolute inset-4 md:inset-8 lg:inset-12 bg-[radial-gradient(ellipse_100%_100%_at_50%_50%,rgb(var(--background)/0.97),rgb(var(--background)/0.75),transparent)]"
+        aria-hidden="true"
+      ></div>
+      <div
+        class={cn(
+          'absolute inset-4 md:inset-8 lg:inset-12 flex flex-col items-center justify-center px-4 text-center',
+          ANIMATIONS_ENABLED && 'animate-fade-in-up',
+        )}
+      >
+        <h1 class="max-w-4xl mx-auto">Construction & Renovation in London</h1>
+        <p class="text-xl md:text-2xl text-foreground/90 mt-4 max-w-2xl mx-auto uppercase">
+          High-end residential and commercial projects, carefully managed from concept to completion
+        </p>
+        <QuoteButton
+          size="lg"
+          class="mt-8 bg-primary text-primary-foreground hover:bg-primary/90 border-0"
+        />
+      </div>
+    </div>
+  </section>
+
+  <Section>
+    <div data-animate-on-scroll data-delay="150">
+      <div class="flex flex-col items-center justify-center max-w-5xl mx-auto">
+        <p class="text-xs font-medium uppercase tracking-widest text-muted-foreground">
+          Built on experience, trust and care
+        </p>
+        <h2 class="mt-4">Who we are</h2>
+        <p class="text-muted-foreground mt-4 leading-relaxed text-center">
+          DS5 Construction Ltd is a family-run construction company based in London. We deliver residential and commercial projects, including renovations, extensions, refurbishments and new builds.
+          <br /><br />
+          Founded by Ivan Shushvar, the company is built on hands-on construction experience and a practical understanding of how projects are delivered on site. That background continues to shape the way we work today, with a strong focus on clear communication, careful organisation, attention to detail and reliability at every stage.
+        </p>
+        <div class="mt-6">
+          <Button href="/projects">View our work</Button>
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  <Section variant="muted">
+    <div data-animate-on-scroll>
+      <h2 class="text-center mb-10">Our Projects</h2>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {
+        projects.map((project, index) => (
+          <div data-animate-on-scroll data-delay={index * STAGGER_DELAY_MS}>
+            <ProjectCard
+              project={project}
+              imageSizes={IMAGE_SIZES.thirdGridMd}
+              imageFallback="/photo/home/1.webp"
+              priority={index === 0}
+            />
+          </div>
+        ))
+      }
+    </div>
+    <div data-animate-on-scroll class="text-center mt-8">
+      <Button href="/projects">View all projects</Button>
+    </div>
+  </Section>
+
+  <Section>
+    <SectionGrid>
+      <div data-animate-on-scroll data-delay="0">
+        <div class="relative aspect-4/3 w-full overflow-hidden bg-muted">
+          <img
+            src="/photo/our-services.webp"
+            alt="DS5 Construction services"
+            width="660"
+            height="495"
+            class="absolute inset-0 h-full w-full object-cover"
+            sizes={IMAGE_SIZES.halfContainer}
+            loading="lazy"
+          />
+        </div>
+      </div>
+      <div data-animate-on-scroll data-delay="150">
+        <div class="flex flex-col justify-center">
+          <h2>Our Services</h2>
+          <p class="text-muted-foreground mt-4 leading-relaxed">
+            At DS5 Construction Ltd, we deliver residential and commercial construction services across London, managing projects from initial planning through to completion. Our work is based on practical site experience, technical coordination and consistent delivery at every stage.
+          </p>
+          <div class="mt-6">
+            <QuoteButton />
+          </div>
+          <HomeServicesCarousel services={services} />
+        </div>
+      </div>
+    </SectionGrid>
+  </Section>
+
+  <Section variant="muted">
+    <SectionGrid>
+      <div data-animate-on-scroll data-delay="0" class="order-2 md:order-1">
+        <div class="flex flex-col justify-center">
+          <h2>New Build</h2>
+          <div class="mt-4 space-y-4 text-muted-foreground leading-relaxed">
+            <p>
+              A new build project gives you the opportunity to create a property that is designed around your exact requirements, priorities and long-term plans. At DS5 Construction Ltd, we support new build projects with a structured approach from the outset, working alongside architects, engineers, and other consultants to deliver well-planned, well-built residential and commercial spaces.
+              <br /><br />
+              From groundworks and structural construction through to internal works and final finishing, we keep quality, coordination and buildability at the centre of the process. Our role is to ensure the project remains clear, well-managed, and delivered properly from start to finish.
+            </p>
+          </div>
+          <div class="mt-6 ml-1">
+            <QuoteButton />
+          </div>
+        </div>
+      </div>
+      <div data-animate-on-scroll data-delay="150" class="order-1 md:order-2">
+        <div class="relative aspect-4/3 w-full overflow-hidden bg-muted">
+          <img
+            src="/photo/services/new-build/n-b-2.webp"
+            alt="New build - DS5 Construction"
+            width="660"
+            height="495"
+            class="absolute inset-0 h-full w-full object-cover"
+            sizes={IMAGE_SIZES.halfContainer}
+            loading="lazy"
+          />
+        </div>
+      </div>
+    </SectionGrid>
+  </Section>
+
+  <WhyWorkWithUs />
+
+  {
+    googleReviews && googleReviews.length > 0 ? (
+      <Testimonials items={googleReviews} variant="muted" />
+    ) : (
+      <Testimonials variant="muted" />
+    )
+  }
+
+  <HaveAQuestionSection />
+</div>

@@ -1,0 +1,7 @@
+---
+import { getLocalBusinessJsonLd } from '../lib/local-business-json-ld';
+
+const jsonLd = getLocalBusinessJsonLd();
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />

@@ -1,0 +1,53 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PublicLayout from '../layouts/PublicLayout.astro';
+import ConstructionHome from '../components/ConstructionHome.astro';
+import Lightbox from '../components/Lightbox.astro';
+import { buildPageMetadata } from '../lib/metadata';
+import { getFeaturedProjects, getServices } from '../utils/data';
+import { getGoogleReviews } from '../lib/google-reviews';
+import { COMING_SOON } from '../config/siteConfig';
+import { getHeroPreloadImage } from '../utils/hero-image';
+
+const homeOgImage =
+  '/photo/projects/beckenham-drive/gallery/MClayton_2602-5-DS5-BEC_036.webp';
+
+const heroPreload = COMING_SOON
+  ? undefined
+  : await getHeroPreloadImage();
+
+const metadata = {
+  ...buildPageMetadata({
+    title: COMING_SOON
+      ? 'DS5 Construction – Coming soon'
+      : 'DS5 Construction – High-End Property Renovations',
+    description: COMING_SOON
+      ? 'Our new website is under construction. Please check back later.'
+      : 'Professional residential and commercial construction services. House extensions, loft conversions, new builds, and renovations.',
+    path: '',
+    image: COMING_SOON ? undefined : homeOgImage,
+  }),
+  preloadImage: heroPreload,
+};
+
+const [projects, services, googleReviews] = await Promise.all([
+  getFeaturedProjects(3),
+  Promise.resolve(getServices()),
+  getGoogleReviews(),
+]);
+---
+
+<BaseLayout metadata={metadata} showLocalBusinessJsonLd={!COMING_SOON}>
+  {
+    !COMING_SOON && (
+      <PublicLayout showHeader showFooter>
+        <ConstructionHome
+          projects={projects}
+          services={services}
+          googleReviews={googleReviews}
+        />
+        <Lightbox />
+      </PublicLayout>
+    )
+  }
+</BaseLayout>

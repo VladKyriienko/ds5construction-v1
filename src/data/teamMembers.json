@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Ivan Shushvar",
+    "role": "Company Director",
+    "description": "Ivan is the founder of DS5 Construction Ltd and plays a central role in the day-to-day running of the company. His background in construction began in Ukraine, where he studied construction and developed practical experience from the ground up before continuing his career in London. Over the years, Ivan has worked across residential renovations, commercial refurbishments, structural works and high-spec fit-outs, building a strong understanding of UK construction methods, materials, regulations and site delivery. He remains closely involved in project oversight, quality control and technical execution, ensuring that every job is completed to a high standard.",
+    "image": "/photo/team/ivan-shushvar.jpg"
+  },
+  {
+    "name": "Olena Shushvar",
+    "role": "Operations & Business Administration",
+    "description": "Olena is responsible for the operational and administrative side of DS5 Construction Ltd, supporting the smooth running of projects across the business. Her role includes administration, documentation, supplier communication, internal coordination and day-to-day operational support. She plays an important role in keeping projects structured and well-managed behind the scenes, from procurement and paperwork to communication between team members and project stakeholders. Her work helps ensure that the business side of each project remains efficient, organised and properly coordinated throughout delivery.",
+    "image": "/photo/team/ivan-cheprak.webp"
+  },
+  {
+    "name": "Martin Longhurst",
+    "role": "Consultant Project Manager",
+    "description": "Martin brings over 40 years of experience in the construction industry, with a background spanning commercial, residential and infrastructure projects in the UK and internationally. He has held senior roles, including Project Director, Construction Director, and Senior Project Manager, with major contractors such as Arnold Construction Services and Interserve Construction. His experience covers the full project lifecycle, from pre-construction and procurement through to delivery and handover. At DS5 Construction Ltd, Martin supports project planning, technical coordination and delivery strategy, helping ensure projects are structured correctly from the outset, with a strong focus on buildability, programme control and quality.",
+    "image": ""
+  }
+]

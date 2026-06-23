@@ -1,0 +1,21 @@
+---
+import type { DescriptionBlock } from '../types';
+
+interface Props {
+  blocks: DescriptionBlock[];
+  keyPrefix: string;
+}
+
+const { blocks, keyPrefix } = Astro.props;
+---
+
+{
+  blocks.map((block, index) => (
+    <div>
+      {block.title && (
+        <h3 class="font-semibold text-foreground text-lg mb-2">{block.title}</h3>
+      )}
+      <div class="rich-text-content" set:html={block.text} />
+    </div>
+  ))
+}

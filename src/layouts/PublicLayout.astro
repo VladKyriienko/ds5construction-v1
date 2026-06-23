@@ -1,0 +1,46 @@
+---
+import ConstructionNavBar from '../components/ConstructionNavBar.astro';
+import ConstructionFooter from '../components/ConstructionFooter.astro';
+import PublicLayoutIntro from '../components/PublicLayoutIntro.astro';
+import CookieConsentPopup from '../components/CookieConsentPopup.astro';
+import CookieConsentGuard from '../components/CookieConsentGuard.astro';
+import QuotePopupDialog from '../components/QuotePopupDialog.astro';
+import { SHOW_DARK_MODE_TOGGLE } from '../config/siteConfig';
+import type { PublicLayoutProps } from '../types';
+
+interface Props extends PublicLayoutProps {}
+
+const {
+  title,
+  description,
+  showHeader = true,
+  showDarkModeToggle,
+  showFooter = true,
+} = Astro.props;
+
+const showToggle = showDarkModeToggle ?? SHOW_DARK_MODE_TOGGLE;
+const showIntro = Boolean(title);
+---
+
+<div class="min-h-screen flex flex-col">
+  {showHeader && <ConstructionNavBar showDarkModeToggle={showToggle} />}
+  <main class="flex-1 flex flex-col">
+    {showIntro && title && (
+      <PublicLayoutIntro title={title} description={description} />
+    )}
+    <CookieConsentGuard>
+      <slot />
+    </CookieConsentGuard>
+  </main>
+  <CookieConsentPopup />
+  <QuotePopupDialog />
+  {showFooter && <ConstructionFooter />}
+</div>
+
+<script>
+  import '../scripts/quote-popup.ts';
+  import '../scripts/mobile-menu.ts';
+  import '../scripts/theme.ts';
+  import '../scripts/animate-on-scroll.ts';
+  import '../scripts/cookie-consent.ts';
+</script>

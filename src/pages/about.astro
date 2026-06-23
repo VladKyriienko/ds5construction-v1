@@ -1,0 +1,205 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PublicLayout from '../layouts/PublicLayout.astro';
+import Section from '../components/Section.astro';
+import SectionGrid from '../components/SectionGrid.astro';
+import WhyWorkWithUs from '../components/WhyWorkWithUs.astro';
+import ProjectsCarousel from '../components/ProjectsCarousel.astro';
+import QuoteButton from '../components/QuoteButton.astro';
+import Button from '../components/common/Button.astro';
+import Lightbox from '../components/Lightbox.astro';
+import { buildPageMetadata } from '../lib/metadata';
+import { IMAGE_SIZES } from '../config/siteConfig';
+import { getFeaturedProjects, getTeamMembers } from '../utils/data';
+
+const metadata = buildPageMetadata({
+  title: 'About – DS5 Construction',
+  description:
+    'Who we are, our process, and policies. Quality-focused construction company with experienced team.',
+  path: 'about',
+  image: '/photo/who-we-are.webp',
+});
+
+const PAGE_INTRO = { title: 'About Us', description: '' };
+const PROJECTS_CAROUSEL_COUNT = 6;
+const { title, description } = PAGE_INTRO;
+const teamMembers = getTeamMembers();
+const projects = getFeaturedProjects(PROJECTS_CAROUSEL_COUNT);
+---
+
+<BaseLayout metadata={metadata}>
+  <PublicLayout title={title} description={description} showHeader showFooter>
+    <div>
+      <Section>
+        <SectionGrid>
+          <div data-animate-on-scroll data-delay="0" class="order-2 md:order-1">
+            <div class="flex flex-col justify-center">
+              <h2>Who we are</h2>
+              <p class="text-muted-foreground mt-4 leading-relaxed">
+                DS5 Construction Ltd is a family-run construction company based in London. We deliver residential and commercial projects, including renovations, extensions, refurbishments and new builds.
+                <br /><br />
+                Founded by Ivan Shushvar, the company is built on hands-on construction experience and a practical understanding of how projects are delivered on site. That background continues to shape the way we work today, with a strong focus on clear communication, careful organisation, attention to detail and reliability at every stage.
+                <br /><br />
+                Our services include house renovations, house extensions, summer houses, structural works, full property refurbishments and new builds. We oversee projects from start to finish, working closely with architects, engineers, and other consultants to maintain clear coordination and on-time delivery.
+                <br /><br />
+                Our team brings together practical experience, technical knowledge and a strong understanding of current materials, methods and regulations. We take a considered approach to each project, focusing on solutions that are appropriate to the property, the brief and the long-term performance of the finished space.
+                <br /><br />
+                At DC5 Construction Ltd, we place strong emphasis on qualification, compliance and professional standards. We work with fully trained and qualified specialists, and we provide all relevant certification where required, including certification for electrical works, gas works and boiler installations. This helps ensure that key systems are installed correctly, safely and in line with current UK requirements.
+                <br /><br />
+                All works are backed by a workmanship guarantee, providing additional assurance of quality, reliability and long-term performance.
+                <br /><br />
+                Our aim is to deliver spaces that are well-built, well-finished, and designed to last, while providing a smooth, well-managed experience from concept to completion.
+              </p>
+              <div class="mt-6 ml-1 mb-1">
+                <QuoteButton>Get in touch</QuoteButton>
+              </div>
+            </div>
+          </div>
+          <div data-animate-on-scroll data-delay="150" class="order-1 md:order-2">
+            <div class="relative aspect-4/3 w-full overflow-hidden bg-muted">
+              <img
+                src="/photo/who-we-are.webp"
+                alt="DS5 Construction - high-end property renovation"
+                width="660"
+                height="495"
+                class="absolute inset-0 h-full w-full object-cover"
+                sizes={IMAGE_SIZES.halfContainer}
+                loading="eager"
+                fetchpriority="high"
+                decoding="sync"
+              />
+            </div>
+          </div>
+        </SectionGrid>
+      </Section>
+
+      <Section variant="muted">
+        <div data-animate-on-scroll>
+          <h2 class="mb-2 text-center">Our team</h2>
+          <p class="text-muted-foreground mb-8 max-w-4xl mx-auto text-center">
+            The team at DS5 Construction brings together years of hands-on industry experience, combining practical knowledge and specialist skills to deliver high-quality results on every project.
+          </p>
+          <ul class="m-0 grid list-none grid-cols-1 items-stretch gap-8 p-0 sm:grid-cols-3 sm:gap-4">
+            {
+              teamMembers.map((member, index) => (
+                <li class="flex min-h-0 list-none">
+                  <div
+                    data-animate-on-scroll
+                    data-delay={index * 80}
+                    class="flex h-full min-h-0 w-full flex-col"
+                  >
+                    <div class="mx-auto flex h-full min-h-0 w-full max-w-[380px] flex-col rounded-lg bg-card text-center shadow-md transition-all duration-200 ease-out hover:scale-[1.05]">
+                      <div class="shrink-0 rounded-t-lg bg-black/70 px-6 pt-5 pb-4 dark:bg-black/80">
+                        <h3 class="font-semibold uppercase tracking-wide text-primary-foreground">
+                          {member.name}
+                        </h3>
+                        <p class="mt-2 text-sm font-bold text-primary-foreground/95">
+                          {member.role}
+                        </p>
+                      </div>
+                      <p class="min-h-0 flex-1 p-6 text-center text-base leading-relaxed text-muted-foreground">
+                        {member.description}
+                      </p>
+                    </div>
+                  </div>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </Section>
+
+      <Section>
+        <SectionGrid>
+          <div data-animate-on-scroll data-delay="0" class="order-1 md:order-1">
+            <div class="relative aspect-4/3 w-full overflow-hidden bg-muted">
+              <img
+                src="/photo/Process.webp"
+                alt="DS5 Construction - project planning and delivery"
+                width="660"
+                height="495"
+                class="absolute inset-0 h-full w-full object-cover"
+                sizes={IMAGE_SIZES.halfContainer}
+                loading="lazy"
+              />
+            </div>
+          </div>
+          <div data-animate-on-scroll data-delay="150" class="order-2 md:order-2">
+            <div class="flex flex-col justify-center">
+              <h2 class="mb-4">Process</h2>
+              <p class="text-muted-foreground mb-4">
+                We guide clients through each project stage with clarity and efficiency.
+              </p>
+              <div class="list-disc list-inside space-y-2 text-muted-foreground">
+                <p class="font-bold text-foreground text-lg">1. Initial Consultation</p>
+                <p>We discuss your property, ideas, and project scope. This helps us understand your goals and see what can be achieved within your budget and programme.</p>
+                <p class="font-bold text-foreground text-lg">2. Feasibility and Planning</p>
+                <p>We assess the project's practical requirements: layout, structure, and timeline. If needed, we coordinate with specialists and manage communication throughout.</p>
+                <p class="font-bold text-foreground text-lg">3. Drawings, Approvals and Preparation</p>
+                <p>We help with drawings, permissions, and documentation. We guide you through approvals and ensure everything is ready before work begins.</p>
+                <p class="font-bold text-foreground text-lg">4. Quotation and Programme of Works</p>
+                <p>We provide a quotation and works programme outlining the scope, costs, and timeline.</p>
+                <p class="font-bold text-foreground text-lg">5. Construction Stage</p>
+                <p>We carefully manage on-site work and provide regular progress updates. Communication, coordination, and quality control remain priorities at each stage.</p>
+                <p class="font-bold text-foreground text-lg">6. Final Finishes and Handover</p>
+                <p>As the project nears completion, we focus on final details and snagging before handover. Afterwards, we remain available to address any outstanding items and ensure everything works as intended.</p>
+              </div>
+            </div>
+          </div>
+        </SectionGrid>
+      </Section>
+
+      {
+        projects.length > 0 && (
+          <Section variant="muted">
+            <div data-animate-on-scroll>
+              <h2 class="text-center mb-10">Our Projects</h2>
+            </div>
+            <ProjectsCarousel projects={projects} />
+            <div data-animate-on-scroll class="text-center mt-8">
+              <Button href="/projects">View all projects</Button>
+            </div>
+          </Section>
+        )
+      }
+
+      <Section id="policies" variant="muted">
+        <SectionGrid>
+          <div data-animate-on-scroll data-delay="0" class="order-2 md:order-1">
+            <div class="flex flex-col justify-center">
+              <h2 class="mb-4">Policies & codes</h2>
+              <p class="text-muted-foreground">
+                We follow UK Building Regulations, construction standards and site safety rules in all our work. Compliance is central: we plan, coordinate and deliver projects with these requirements from the start.
+                <br /><br />
+                We work closely with architects, engineers, Building Control officers and other professionals as needed. This ensures each project meets technical and legal requirements, including Building Regulations, health and safety, fire safety, and project-specific rules.
+                <br /><br />
+                We know it is important to work responsibly in London's residential areas. We manage site activity with care, respect local requirements and remain mindful of neighbours, access and working hours.
+                <br /><br />
+                We aim to deliver work that is well-built, properly managed, and meets the standards expected in the UK construction industry.
+              </p>
+              <div class="mt-6 ml-1 mb-1">
+                <QuoteButton>Get in touch</QuoteButton>
+              </div>
+            </div>
+          </div>
+          <div data-animate-on-scroll data-delay="150" class="order-1 md:order-2">
+            <div class="relative aspect-4/3 w-full overflow-hidden bg-muted">
+              <img
+                src="/photo/policies-codes.webp"
+                alt="DS5 Construction - health and safety standards"
+                width="660"
+                height="495"
+                class="absolute inset-0 h-full w-full object-cover"
+                sizes={IMAGE_SIZES.halfContainer}
+                loading="lazy"
+              />
+            </div>
+          </div>
+        </SectionGrid>
+      </Section>
+
+      <WhyWorkWithUs />
+    </div>
+    <Lightbox />
+  </PublicLayout>
+</BaseLayout>

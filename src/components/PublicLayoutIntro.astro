@@ -1,0 +1,19 @@
+---
+import Section from './Section.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<Section variant="tight">
+  <div class="text-center" data-animate-on-scroll data-delay="150">
+    <h1 class="mb-4">{title}</h1>
+    {description && (
+      <p class="text-muted-foreground max-w-5xl mx-auto">{description}</p>
+    )}
+  </div>
+</Section>

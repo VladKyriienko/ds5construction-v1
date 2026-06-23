@@ -1,0 +1,115 @@
+---
+import Button from './common/Button.astro';
+import {
+  CONTACT_EMAIL_MAX,
+  CONTACT_FIRST_NAME_MAX,
+  CONTACT_MESSAGE_MAX,
+  CONTACT_PHONE_MAX_CHARS,
+  CONTACT_SECOND_NAME_MAX,
+} from '../lib/contact-form-validation';
+
+interface Props {
+  idPrefix?: string;
+  /** Defer JS until quote popup opens (popup forms only). */
+  lazy?: boolean;
+}
+
+const { idPrefix = '', lazy = false } = Astro.props;
+const id = (name: string) => `${idPrefix}${name}`;
+---
+
+<form data-contact-form class="space-y-3 sm:space-y-4">
+  <p data-form-error class="text-sm text-destructive hidden" role="alert"></p>
+
+  <div data-form-fields class="space-y-3 sm:space-y-4">
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+    <div class="space-y-0 sm:space-y-2">
+      <label for={id('first-name')} class="text-sm font-medium leading-none">First name *</label>
+      <input
+        id={id('first-name')}
+        name="firstName"
+        autocomplete="given-name"
+        required
+        maxlength={CONTACT_FIRST_NAME_MAX}
+        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+      />
+      <p data-error-for="firstName" class="text-sm text-destructive hidden"></p>
+    </div>
+    <div class="space-y-0 sm:space-y-2">
+      <label for={id('second-name')} class="text-sm font-medium leading-none">Second name</label>
+      <input
+        id={id('second-name')}
+        name="secondName"
+        autocomplete="family-name"
+        maxlength={CONTACT_SECOND_NAME_MAX}
+        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+      />
+      <p data-error-for="secondName" class="text-sm text-destructive hidden"></p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+    <div class="space-y-0 sm:space-y-2">
+      <label for={id('phone')} class="text-sm font-medium leading-none">Phone</label>
+      <input
+        id={id('phone')}
+        name="phone"
+        type="tel"
+        autocomplete="tel"
+        inputmode="tel"
+        pattern="[0-9+().-]*"
+        maxlength={CONTACT_PHONE_MAX_CHARS}
+        placeholder="e.g. +442012345678"
+        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+      />
+      <p data-error-for="phone" class="text-sm text-destructive hidden"></p>
+    </div>
+    <div class="space-y-0 sm:space-y-2">
+      <label for={id('email')} class="text-sm font-medium leading-none">Email *</label>
+      <input
+        id={id('email')}
+        name="email"
+        type="email"
+        autocomplete="email"
+        required
+        maxlength={CONTACT_EMAIL_MAX}
+        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+      />
+      <p data-error-for="email" class="text-sm text-destructive hidden"></p>
+    </div>
+  </div>
+
+  <div class="space-y-0 sm:space-y-2">
+    <label for={id('message')} class="text-sm font-medium leading-none">Message *</label>
+    <textarea
+      id={id('message')}
+      name="message"
+      rows="4"
+      autocomplete="off"
+      required
+      maxlength={CONTACT_MESSAGE_MAX}
+      class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+    ></textarea>
+    <p data-error-for="message" class="text-sm text-destructive hidden"></p>
+  </div>
+
+  <Button type="submit" class="w-full sm:w-auto">
+    Get free quote
+  </Button>
+  </div>
+
+  <div
+    data-form-success
+    class="hidden rounded-lg border bg-card p-8 text-center"
+  >
+    <p class="text-lg font-medium">Thank you for your message.</p>
+    <p class="text-muted-foreground mt-2">We will get back to you as soon as possible.</p>
+  </div>
+</form>
+
+{!lazy && (
+  <script>
+    import { ensureContactForms } from '../scripts/contact-form';
+    void ensureContactForms();
+  </script>
+)}

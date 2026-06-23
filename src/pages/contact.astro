@@ -1,0 +1,79 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PublicLayout from '../layouts/PublicLayout.astro';
+import ContactForm from '../components/ContactForm.astro';
+import ContactMap from '../components/ContactMap.astro';
+import Icon from '../components/common/Icon.astro';
+import { buildPageMetadata } from '../lib/metadata';
+
+const metadata = buildPageMetadata({
+  title: 'Contact Us – DS5 Construction',
+  description: 'Get in touch for a free quote. Phone, email, and contact form.',
+  path: 'contact',
+  image: '/photo/hero.webp',
+});
+
+const PAGE_INTRO = {
+  title: 'Contact Us',
+  description:
+    "Leave a message and we'll contact you back. For urgent enquiries you can also call or email us directly.",
+};
+const CONTACT_FORM_HEADING = 'Have a question?';
+const CONTACT_ADDRESS_LABEL = 'Address';
+const CONTACT_CONTACTS_LABEL = 'Contacts';
+const CONTACT_FIND_US_LABEL = 'Find us';
+const CONTACT_ADDRESS = '90 Paul St, London EC2A 4NE, UK';
+const CONTACT_PHONE = '+44 7383 501785';
+const CONTACT_EMAIL = 'info@DS5construction.co.uk';
+const { title, description } = PAGE_INTRO;
+---
+
+<BaseLayout metadata={metadata}>
+  <PublicLayout title={title} description={description} showHeader showFooter>
+    <div class="py-10 md:py-20">
+      <div class="container mx-auto">
+        <div data-animate-on-scroll class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+          <div class="lg:col-span-2">
+            <section id="form">
+              <h2 class="mb-6">{CONTACT_FORM_HEADING}</h2>
+              <ContactForm />
+            </section>
+          </div>
+          <aside class="space-y-6">
+            <div>
+              <h3 class="mb-2">{CONTACT_ADDRESS_LABEL}</h3>
+              <p class="text-muted-foreground flex items-center gap-2">
+                <Icon name="MapPin" class="h-4 w-4 shrink-0" />
+                {CONTACT_ADDRESS}
+              </p>
+            </div>
+            <div>
+              <h3 class="mb-2">{CONTACT_CONTACTS_LABEL}</h3>
+              <p class="text-muted-foreground flex items-center gap-2">
+                <Icon name="Mail" class="h-4 w-4 shrink-0" />
+                <a href={`mailto:${CONTACT_EMAIL}`} class="hover:text-foreground">
+                  {CONTACT_EMAIL}
+                </a>
+              </p>
+              <p class="text-muted-foreground flex items-center gap-2 mt-1">
+                <Icon name="Phone" class="h-4 w-4 shrink-0" />
+                <a href={`tel:${CONTACT_PHONE.replace(/\s/g, '')}`} class="hover:text-foreground">
+                  {CONTACT_PHONE}
+                </a>
+              </p>
+            </div>
+          </aside>
+        </div>
+
+        <section data-animate-on-scroll class="mt-16" aria-label="Map location" id="map">
+          <h2 class="mb-4">{CONTACT_FIND_US_LABEL}</h2>
+          <p class="text-muted-foreground mb-4 flex items-center gap-2">
+            <Icon name="MapPin" class="h-4 w-4 shrink-0" />
+            {CONTACT_ADDRESS}
+          </p>
+          <ContactMap />
+        </section>
+      </div>
+    </div>
+  </PublicLayout>
+</BaseLayout>

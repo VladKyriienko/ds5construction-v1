@@ -1,0 +1,29 @@
+---
+import Button from './common/Button.astro';
+
+interface Props {
+  children?: string;
+  class?: string;
+  variant?: 'default' | 'outline' | 'ghost' | 'secondary' | 'destructive';
+  size?: 'default' | 'sm' | 'lg' | 'icon';
+  'data-close-mobile-menu'?: boolean;
+}
+
+const {
+  children = 'Get free quote',
+  class: className,
+  variant,
+  size,
+  ...rest
+} = Astro.props;
+---
+
+<Button
+  variant={variant}
+  size={size}
+  class={className}
+  data-quote-button
+  {...rest}
+>
+  {children}
+</Button>

@@ -1,0 +1,36 @@
+---
+import Gallery from './Gallery.astro';
+import Section from './Section.astro';
+import type { SectionVariant } from '../types';
+import { cn } from '../utils/cn';
+
+interface Props {
+  heading: string;
+  description?: string;
+  images: string[];
+  galleryTitle: string;
+  variant?: SectionVariant;
+  class?: string;
+}
+
+const {
+  heading,
+  description = 'A curated selection of completed works showcasing our construction quality, technical precision, and attention to detail across every stage of delivery.',
+  images,
+  galleryTitle,
+  variant = 'default',
+  class: className,
+} = Astro.props;
+---
+
+<Section variant={variant} class={cn('pt-10 md:pt-12', className)}>
+  <div class="mx-auto w-full max-w-[1100px]">
+    <div data-animate-on-scroll>
+      <div class="mb-8 text-center">
+        <h2 class="mb-3">{heading}</h2>
+        <p class="mx-auto max-w-4xl text-muted-foreground">{description}</p>
+      </div>
+      <Gallery images={images} title={galleryTitle} showThumbnails={false} />
+    </div>
+  </div>
+</Section>

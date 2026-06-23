@@ -1,0 +1,126 @@
+---
+import {
+  FOOTER_COPYRIGHT,
+  FOOTER_LINKS,
+  FOOTER_PRIVACY_HREF,
+  getGoogleMapsOpenUrl,
+  SOCIAL_FACEBOOK_URL,
+  SOCIAL_INSTAGRAM_URL,
+  SOCIAL_YOUTUBE_URL,
+} from '../config/siteConfig';
+import Icon from './common/Icon.astro';
+
+const COMPANY_NAME = 'DS5 Construction';
+const COMPANY_DESCRIPTION =
+  'High-end residential and commercial projects, carefully managed from concept to completion.';
+const CONTACT_ADDRESS = '90 Paul St, London EC2A 4NE, UK';
+const CONTACT_PHONE = '+44 7383 501785';
+const CONTACT_EMAIL = 'info@DS5construction.co.uk';
+const FOOTER_QUICK_LINKS_TITLE = 'Quick links';
+const FOOTER_CONTACT_TITLE = 'Contact';
+const FOOTER_SOCIAL_TITLE = 'Follow us';
+const FOOTER_PRIVACY_LABEL = 'Privacy & Cookies Policy';
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t bg-muted/50">
+  <div class="container mx-auto py-12">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div>
+        <h3 class="mb-4">{COMPANY_NAME}</h3>
+        <p class="text-sm text-muted-foreground max-w-xs">{COMPANY_DESCRIPTION}</p>
+      </div>
+
+      <div>
+        <h3 class="mb-4">{FOOTER_QUICK_LINKS_TITLE}</h3>
+        <ul class="space-y-2">
+          {
+            FOOTER_LINKS.map(({ href, label }) => (
+              <li>
+                <a
+                  href={href}
+                  class="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="mb-4">{FOOTER_CONTACT_TITLE}</h3>
+        <ul class="space-y-3 text-sm text-muted-foreground">
+          <li class="flex items-center gap-2">
+            <Icon name="Phone" class="h-4 w-4 shrink-0" />
+            <a href={`tel:${CONTACT_PHONE.replace(/\s/g, '')}`} class="hover:text-foreground">
+              {CONTACT_PHONE}
+            </a>
+          </li>
+          <li class="flex items-center gap-2">
+            <Icon name="Mail" class="h-4 w-4 shrink-0" />
+            <a href={`mailto:${CONTACT_EMAIL}`} class="hover:text-foreground">
+              {CONTACT_EMAIL}
+            </a>
+          </li>
+          <li class="flex items-start gap-2">
+            <Icon name="MapPin" class="h-4 w-4 shrink-0 mt-0.5" />
+            <a
+              href={getGoogleMapsOpenUrl()}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="hover:text-foreground"
+            >
+              {CONTACT_ADDRESS}
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="mb-4">{FOOTER_SOCIAL_TITLE}</h3>
+        <div class="flex gap-3">
+          <a
+            href={SOCIAL_FACEBOOK_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="size-10 rounded-lg bg-muted border border-border flex items-center justify-center text-foreground hover:bg-muted/80 origin-center hover:scale-105 transition-transform duration-200"
+            aria-label="Facebook"
+          >
+            <Icon name="Facebook" class="size-5" />
+          </a>
+          <a
+            href={SOCIAL_INSTAGRAM_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="size-10 rounded-lg bg-muted border border-border flex items-center justify-center text-foreground hover:bg-muted/80 origin-center hover:scale-105 transition-transform duration-200"
+            aria-label="Instagram"
+          >
+            <Icon name="Instagram" class="size-5" />
+          </a>
+          <a
+            href={SOCIAL_YOUTUBE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="size-10 rounded-lg bg-muted border border-border flex items-center justify-center text-foreground hover:bg-muted/80 origin-center hover:scale-105 transition-transform duration-200"
+            aria-label="YouTube"
+          >
+            <Icon name="Youtube" class="size-5" />
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="mt-10 pt-8 border-t text-center text-sm text-muted-foreground flex flex-wrap items-center justify-around gap-x-4 gap-y-1"
+    >
+      <span>{FOOTER_COPYRIGHT(year)}</span>
+      <span>
+        <a href={FOOTER_PRIVACY_HREF} class="hover:text-foreground transition-colors">
+          {FOOTER_PRIVACY_LABEL}
+        </a>
+      </span>
+    </div>
+  </div>
+</footer>

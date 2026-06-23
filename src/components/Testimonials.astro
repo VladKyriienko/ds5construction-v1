@@ -1,0 +1,143 @@
+---
+import { cn } from '../utils/cn';
+import Icon from './common/Icon.astro';
+import type { TestimonialItem, TestimonialsProps } from '../types';
+import { EMBLA_AUTOPLAY_INTERVAL_MS } from '../config/siteConfig';
+
+interface Props extends TestimonialsProps {}
+
+const TESTIMONIALS: TestimonialItem[] = [
+  {
+    quote:
+      'We discovered Ivan and DS5 through our work on a new bathroom. This was step one of a major, full apartment refurbishment. We had never done anything like this before, so we were complete newcomers to the challenges of managing a complex project of this kind. Ivan and his team impressed us so much with the work on our en-suite that it was.',
+    author: 'MJ',
+    project: '4 weeks ago',
+  },
+  {
+    quote:
+      'Ivan, Max and the DS5 Construction team did a fantastic job on our wrap around extension and upstairs bathroom renovation. They were extremely professional, knowledgeable and conscientious. The attention to detail was magnificent and we are very happy with the final results. Ivan was really supportive throughout the process and gave.',
+    author: 'Sam Beckenham',
+    project: '3 months ago',
+  },
+  {
+    quote:
+      'DS5 Construction did an excellent job on the complete refurbishment of one of our commercial rental units. Ivan offered excellent service, and the workmen were on time and paid close attention to detail. We could not be more thrilled with the results- they speak for themselves. Thank you so much to Ivan and the whole team!',
+    author: 'Southwark Square',
+    project: 'a year ago',
+  },
+  {
+    quote:
+      "Ivan's team did a superb refurbishment of our house in south London - I recommend this company highly for their reliability and the quality of the work and service.",
+    author: 'Rose Prince',
+    project: '2 years ago',
+  },
+  {
+    quote:
+      'We engaged Ivan and team at DS5 Construction to replace our bathroom, fit a new boiler and replace the water pipe from the house to the street. Throughout the process Ivan, Max and team provided a superb service. They gave excellent guidance and reassurance as we finalised our plans, kept us informed and the project was completed exactly.',
+    author: 'Will Kendal',
+    project: '8 months ago',
+  },
+];
+
+const GOOGLE_REVIEWS_LINK_FALLBACK =
+  'https://www.google.com/search?q=DS5+Construction+LTD+reviews';
+const GOOGLE_REVIEWS_LINK_LABEL = 'View all our reviews on Google';
+
+function getGoogleReviewsUrl(): string {
+  const id = import.meta.env.PUBLIC_GOOGLE_PLACE_ID?.trim();
+  if (id) {
+    return `https://search.google.com/local/reviews?placeid=${encodeURIComponent(id)}`;
+  }
+  return GOOGLE_REVIEWS_LINK_FALLBACK;
+}
+
+const {
+  title = 'Reviews',
+  description = "Our clients' reviews",
+  items,
+  variant = 'default',
+  class: className,
+} = Astro.props;
+
+const displayItems = items && items.length > 0 ? items : TESTIMONIALS;
+---
+
+{
+  displayItems.length > 0 && (
+    <section
+      data-animate-on-scroll
+      class={cn('py-10 md:py-20', variant === 'muted' && 'bg-muted/50', className)}
+    >
+      <div class="container mx-auto">
+        <h2 class={cn('text-center', !description && 'mb-10')}>{title}</h2>
+        {description && (
+          <p class="text-muted-foreground text-center mt-2 mb-10">{description}</p>
+        )}
+        <div
+          class="relative w-full"
+          data-embla
+          data-loop="true"
+          data-align="center"
+          data-autoplay="true"
+          data-pause-on-hover="true"
+          data-pause-on-pointer-down="true"
+        >
+          <div class="overflow-hidden" data-embla-viewport>
+            <div class="flex pt-2 pb-2">
+              {
+                displayItems.map((t, index) => (
+                  <div
+                    class="min-w-0 shrink-0 grow-0 basis-full md:basis-[50%] pl-0"
+                    data-embla-slide
+                  >
+                    <div class="pl-8 pr-4 md:px-3 py-3 h-full min-w-0">
+                      <blockquote class="rounded-lg border bg-card p-6 md:p-8 flex flex-col text-center h-full origin-center transition-transform duration-200 hover:scale-[1.03] min-w-0 overflow-hidden">
+                        <Icon name="Quote" class="h-8 w-8 text-muted-foreground mb-4 mx-auto shrink-0" />
+                        <p class="text-muted-foreground flex-1 text-base md:text-lg line-clamp-4 md:line-clamp-5">
+                          &ldquo;{t.quote}&rdquo;
+                        </p>
+                        <footer class="mt-6 text-sm font-medium shrink-0">
+                          {t.author} – {t.project}
+                        </footer>
+                      </blockquote>
+                    </div>
+                  </div>
+                ))
+              }
+            </div>
+          </div>
+          <button
+            type="button"
+            data-embla-prev
+            class="absolute left-0 md:-left-2 top-1/2 -translate-y-1/2 inline-flex h-8 w-8 items-center justify-center rounded-full border bg-background shadow-sm"
+            aria-label="Previous slide"
+          >
+            <Icon name="ChevronLeft" class="h-4 w-4" />
+          </button>
+          <button
+            type="button"
+            data-embla-next
+            class="absolute right-0 md:-right-2 top-1/2 -translate-y-1/2 inline-flex h-8 w-8 items-center justify-center rounded-full border bg-background shadow-sm"
+            aria-label="Next slide"
+          >
+            <Icon name="ChevronRight" class="h-4 w-4" />
+          </button>
+        </div>
+        <p class="text-center mt-6">
+          <a
+            href={getGoogleReviewsUrl()}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-base font-medium text-foreground hover:text-foreground/80 no-underline"
+          >
+            {GOOGLE_REVIEWS_LINK_LABEL}
+          </a>
+        </p>
+      </div>
+    </section>
+  )
+}
+
+<script>
+  import '../scripts/embla.ts';
+</script>

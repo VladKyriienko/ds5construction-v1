@@ -1,0 +1,205 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PublicLayout from '../../layouts/PublicLayout.astro';
+import BackLink from '../../components/BackLink.astro';
+import BreadcrumbJsonLd from '../../components/BreadcrumbJsonLd.astro';
+import Section from '../../components/Section.astro';
+import HaveAQuestionSection from '../../components/HaveAQuestionSection.astro';
+import WhyWorkWithUs from '../../components/WhyWorkWithUs.astro';
+import Testimonials from '../../components/Testimonials.astro';
+import ContentBlockSection from '../../components/ContentBlockSection.astro';
+import PortfolioGallerySection from '../../components/PortfolioGallerySection.astro';
+import ProjectConstructionProcess from '../../components/ProjectConstructionProcess.astro';
+import Lightbox from '../../components/Lightbox.astro';
+import { buildPageMetadata, DEFAULT_OG_IMAGE } from '../../lib/metadata';
+import { stripeVariant } from '../../utils/content-blocks';
+import { stripHtml } from '../../utils/stripHtml';
+import {
+  getProjectBySlugAsync,
+  getPublishedProjectSlugs,
+} from '../../utils/data';
+import type {
+  ConstructionProcessContent,
+  DescriptionBlock,
+  ProjectContentBlock,
+} from '../../types';
+
+const PROJECT_IMAGE_FALLBACK = '/photo/hero.webp';
+
+export async function getStaticPaths() {
+  return getPublishedProjectSlugs().map((slug) => ({ params: { slug } }));
+}
+
+const { slug } = Astro.params;
+const project = slug ? await getProjectBySlugAsync(slug) : undefined;
+
+if (!project) {
+  return Astro.redirect('/404');
+}
+
+const description = stripHtml(
+  (project.description && project.description[0]?.text) ||
+    project.blocks?.[0]?.description?.[0]?.text ||
+    project.title,
+);
+const image = project.image ?? project.blocks?.[0]?.image ?? DEFAULT_OG_IMAGE;
+
+const metadata = buildPageMetadata({
+  title: `${project.title} – DS5 Construction`,
+  description,
+  path: `projects/${slug}`,
+  image,
+});
+
+const contentBlocks: ProjectContentBlock[] =
+  project.blocks && project.blocks.length > 0
+    ? project.blocks
+    : [
+        {
+          description: project.description ?? [],
+          ...(project.image !== undefined ? { image: project.image } : {}),
+        },
+      ];
+
+const heroImage = project.image ?? project.blocks?.[0]?.image ?? PROJECT_IMAGE_FALLBACK;
+const allowContentQuote = project.showQuoteInContent !== false;
+const showGallery = project.showGallery !== false;
+
+function isTheResultBlock(block: DescriptionBlock): boolean {
+  return block.title.trim().toLowerCase() === 'the result';
+}
+
+function constructionProcessHasPhotos(cp: ConstructionProcessContent): boolean {
+  return cp.stages.some((stage) => stage.photos.length > 0);
+}
+
+type ProjectContentSegment =
+  | { type: 'construction-process' }
+  | { type: 'block'; blockIndex: number };
+
+function buildProjectContentSegments(
+  blocks: ProjectContentBlock[],
+  firstResultSectionIndex: number,
+  hasProcess: boolean,
+): ProjectContentSegment[] {
+  const segments: ProjectContentSegment[] = [];
+  const lastIdx = blocks.length - 1;
+
+  for (let i = 0; i < blocks.length; i++) {
+    const block = blocks[i];
+    if (!block) continue;
+    const hasTheResult = block.description.some(isTheResultBlock);
+    const appendProcessAfter =
+      hasProcess &&
+      ((firstResultSectionIndex >= 0 && i === firstResultSectionIndex && hasTheResult) ||
+        (firstResultSectionIndex === -1 && i === lastIdx));
+
+    segments.push({ type: 'block', blockIndex: i });
+    if (appendProcessAfter) segments.push({ type: 'construction-process' });
+  }
+
+  return segments;
+}
+
+const firstResultSectionIndex = contentBlocks.findIndex((block) =>
+  block.description.some(isTheResultBlock),
+);
+
+const hasConstructionProcessGallery = Boolean(
+  project.constructionProcess &&
+    constructionProcessHasPhotos(project.constructionProcess),
+);
+
+const segments = buildProjectContentSegments(
+  contentBlocks,
+  firstResultSectionIndex,
+  hasConstructionProcessGallery,
+);
+
+const contentStripeCount = segments.length;
+const portfolioStripeIndex = contentStripeCount;
+const whyStripeIndex = contentStripeCount + (showGallery ? 1 : 0);
+const testimonialsStripeIndex = whyStripeIndex + 1;
+const contactStripeIndex = testimonialsStripeIndex + 1;
+---
+
+<BaseLayout metadata={metadata}>
+  <PublicLayout showHeader showFooter>
+    <BreadcrumbJsonLd
+      items={[
+        { name: 'Home', path: '' },
+        { name: 'Projects', path: 'projects' },
+        { name: project.title, path: `projects/${slug}` },
+      ]}
+    />
+
+    <Section variant="tight" class="pb-0 md:pb-0">
+      <BackLink />
+    </Section>
+
+    <Section variant="tight" class="pt-2 md:pt-2">
+      <div class="text-center">
+        <h1>{project.title}</h1>
+        {project.address && (
+          <p class="mt-2">
+            <strong>Address:</strong> {project.address}
+          </p>
+        )}
+      </div>
+    </Section>
+
+    {
+      segments.map((segment, stripeIndex) => {
+        if (segment.type === 'construction-process') {
+          return (
+            <Section variant={stripeVariant(stripeIndex)}>
+              <div data-animate-on-scroll>
+                {project.constructionProcess && (
+                  <ProjectConstructionProcess
+                    projectTitle={project.title}
+                    content={project.constructionProcess}
+                    showQuoteButton={
+                      allowContentQuote &&
+                      project.constructionProcess.quoteButton === true
+                    }
+                  />
+                )}
+              </div>
+            </Section>
+          );
+        }
+
+        const blockIndex = segment.blockIndex;
+        const section = contentBlocks[blockIndex];
+        if (!section) return null;
+
+        return (
+          <ContentBlockSection
+            block={section}
+            blockIndex={blockIndex}
+            stripeIndex={stripeIndex}
+            imageSrc={section.image ?? heroImage}
+            imageAlt={project.title}
+            allowContentQuote={allowContentQuote}
+          />
+        );
+      })
+    }
+
+    {
+      showGallery && (
+        <PortfolioGallerySection
+          heading="Project Result"
+          images={[...project.gallery]}
+          galleryTitle={project.title}
+          variant={stripeVariant(portfolioStripeIndex)}
+        />
+      )
+    }
+
+    <WhyWorkWithUs variant={stripeVariant(whyStripeIndex)} />
+    <Testimonials variant={stripeVariant(testimonialsStripeIndex)} />
+    <HaveAQuestionSection variant={stripeVariant(contactStripeIndex)} />
+    <Lightbox />
+  </PublicLayout>
+</BaseLayout>

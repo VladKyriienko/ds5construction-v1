@@ -1,0 +1,36 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PublicLayout from '../../layouts/PublicLayout.astro';
+import Section from '../../components/Section.astro';
+import ProjectsGrid from '../../components/ProjectsGrid.astro';
+import QuoteButton from '../../components/QuoteButton.astro';
+import { buildPageMetadata } from '../../lib/metadata';
+import { getProjects } from '../../utils/data';
+
+const metadata = buildPageMetadata({
+  title: 'Projects – DS5 Construction',
+  description: 'Our completed construction and renovation projects.',
+  path: 'projects',
+  image: '/photo/hero.webp',
+});
+
+const PAGE_INTRO = {
+  title: 'Our Projects',
+  description:
+    'Our portfolio reflects a range of bespoke residential and commercial projects across London, from renovations and extensions to full redevelopments and new builds. Each project is delivered with close attention to detail, careful coordination and a consistent commitment to quality throughout.',
+};
+
+const { title, description } = PAGE_INTRO;
+const projects = getProjects();
+---
+
+<BaseLayout metadata={metadata}>
+  <PublicLayout title={title} description={description} showHeader showFooter>
+    <Section>
+      <ProjectsGrid projects={projects} />
+      <div data-animate-on-scroll class="mt-12 flex justify-center">
+        <QuoteButton>Start your project</QuoteButton>
+      </div>
+    </Section>
+  </PublicLayout>
+</BaseLayout>

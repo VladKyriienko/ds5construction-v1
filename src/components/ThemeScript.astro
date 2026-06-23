@@ -1,0 +1,20 @@
+---
+import { DEFAULT_THEME } from '../config/siteConfig';
+---
+
+<script is:inline define:vars={{ defaultTheme: DEFAULT_THEME }}>
+  (function () {
+    try {
+      var t = localStorage.getItem('theme');
+      var dark = t === 'dark' || (t === null && defaultTheme === 'dark');
+      var el = document.documentElement;
+      if (dark) {
+        el.classList.add('dark');
+        el.setAttribute('data-theme', 'dark');
+      } else {
+        el.classList.remove('dark');
+        el.setAttribute('data-theme', 'light');
+      }
+    } catch (e) {}
+  })();
+</script>

@@ -1,0 +1,166 @@
+---
+import { cn } from '../utils/cn';
+import { NAV_LINKS, SHOW_DARK_MODE_TOGGLE } from '../config/siteConfig';
+import Icon from './common/Icon.astro';
+import Button from './common/Button.astro';
+import QuoteButton from './QuoteButton.astro';
+
+interface Props {
+  showDarkModeToggle?: boolean;
+}
+
+const { showDarkModeToggle = SHOW_DARK_MODE_TOGGLE } = Astro.props;
+const pathname = Astro.url.pathname;
+
+function isActive(href: string): boolean {
+  return pathname === href || (href !== '/' && pathname.startsWith(`${href}/`));
+}
+
+const linkClass = (active: boolean) =>
+  cn(
+    'relative pb-1 text-[16px] font-semibold transition-colors',
+    'after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:origin-bottom after:rounded-full',
+    'after:content-[""] after:bg-foreground after:transition-transform after:duration-1000 after:ease-out',
+    active
+      ? 'text-foreground after:scale-y-100'
+      : 'text-foreground hover:text-foreground after:scale-y-0 hover:after:scale-y-100',
+  );
+
+const mobileLinkClass = (active: boolean) =>
+  cn(
+    'relative pb-1 inline-block w-fit text-[16px] font-semibold transition-colors',
+    'after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:origin-bottom after:rounded-full',
+    'after:content-[""] after:bg-foreground after:transition-transform after:duration-1000 after:ease-out',
+    active
+      ? 'text-foreground after:scale-y-100'
+      : 'text-foreground/80 hover:text-foreground after:scale-y-0 hover:after:scale-y-100',
+  );
+---
+
+<header
+  data-mobile-header
+  class="sticky top-0 w-full border-b bg-muted/95 backdrop-blur-sm z-50"
+>
+  <div class="container mx-auto py-4 flex items-center justify-between">
+    <a href="/" class="flex items-center">
+      <img
+        src="/Logo/DS5-27.webp"
+        alt="DS5 Construction"
+        width="180"
+        height="44"
+        class="h-12 w-auto object-contain dark:hidden"
+        loading={pathname === '/' ? 'eager' : 'lazy'}
+        fetchpriority={pathname === '/' ? 'high' : undefined}
+        decoding={pathname === '/' ? 'sync' : 'async'}
+      />
+      <img
+        src="/Logo/DS5-29.webp"
+        alt="DS5 Construction"
+        width="180"
+        height="44"
+        class="h-12 w-auto object-contain hidden dark:block"
+        loading={pathname === '/' ? 'eager' : 'lazy'}
+        fetchpriority={pathname === '/' ? 'high' : undefined}
+        decoding={pathname === '/' ? 'sync' : 'async'}
+      />
+    </a>
+
+    <nav class="hidden nav:flex items-center gap-6" aria-label="Main navigation">
+      {
+        NAV_LINKS.map(({ href, label }) => (
+          <a href={href} class={linkClass(isActive(href))}>
+            {label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="hidden nav:flex items-center gap-2">
+      {
+        showDarkModeToggle && (
+          <Button
+            variant="ghost"
+            size="sm"
+            data-theme-toggle
+            class="h-9 w-9 p-0"
+            aria-label="Toggle theme"
+          >
+            <Icon name="Moon" class="h-5 w-5 dark:hidden" />
+            <Icon name="Sun" class="h-5 w-5 hidden dark:block" />
+          </Button>
+        )
+      }
+      <QuoteButton />
+    </div>
+
+    <div class="flex nav:hidden items-center gap-2">
+      {
+        showDarkModeToggle && (
+          <Button
+            variant="ghost"
+            size="sm"
+            data-theme-toggle
+            class="h-9 w-9 p-0"
+            aria-label="Toggle theme"
+          >
+            <Icon name="Moon" class="h-5 w-5 dark:hidden" />
+            <Icon name="Sun" class="h-5 w-5 hidden dark:block" />
+          </Button>
+        )
+      }
+      <Button
+        variant="ghost"
+        size="sm"
+        data-mobile-menu-toggle
+        aria-expanded="false"
+        aria-label="Open menu"
+        class="relative h-9 w-9 shrink-0 p-0 [&_svg]:size-5!"
+      >
+        <span
+          data-menu-icon
+          data-open="false"
+          class="absolute inset-0 m-auto flex size-5 items-center justify-center"
+          aria-hidden="true"
+        >
+          <Icon name="Menu" class="size-5" />
+        </span>
+        <span
+          data-close-icon
+          data-open="false"
+          class="absolute inset-0 m-auto flex size-5 items-center justify-center"
+          aria-hidden="true"
+        >
+          <Icon name="X" class="size-5" />
+        </span>
+      </Button>
+    </div>
+  </div>
+</header>
+
+<div
+  data-mobile-menu-backdrop
+  class="fixed inset-0 z-55 bg-black/20 hidden nav:hidden"
+  aria-hidden="true"
+></div>
+
+<aside
+  data-mobile-menu
+  class="fixed right-0 z-60 w-[80%] flex-col border-l border-border/50 bg-muted/95 backdrop-blur-sm pb-20 shadow-none hidden nav:hidden"
+  style="top: var(--mobile-header-height, 72px); bottom: 0;"
+  aria-hidden="true"
+>
+  <h2 class="sr-only">Menu</h2>
+  <p class="sr-only">Site navigation links</p>
+  <div class="flex flex-col flex-1 justify-between min-h-0 p-6">
+    <nav class="flex flex-col gap-4" aria-label="Mobile navigation">
+      {
+        NAV_LINKS.map(({ href, label }) => (
+          <a href={href} class={mobileLinkClass(isActive(href))} data-mobile-menu-link>
+            {label}
+          </a>
+        ))
+      }
+    </nav>
+    <QuoteButton class="mt-6" data-close-mobile-menu />
+  </div>
+</aside>

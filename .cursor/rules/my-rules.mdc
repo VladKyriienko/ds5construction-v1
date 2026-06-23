@@ -1,0 +1,62 @@
+---
+alwaysApply: true
+---
+
+---
+description: DS5 Construction Next.js to Astro migration rules
+globs:
+  - "**/*"
+alwaysApply: true
+---
+
+# Project Goal
+
+Migrate DS5 Construction from Next.js to Astro with pixel-perfect visual match, better performance, and minimal client-side JavaScript.
+
+# Main Rules
+
+- Do not redesign the site.
+- Keep layout, spacing, colors, typography, images, and responsive behavior as close as possible to the current Next.js version.
+- Prefer `.astro` components over React components.
+- Use React only when real interactivity is required.
+- Do not convert the site into an SPA.
+- Keep Astro output static unless server logic is required.
+- Preserve existing URLs where possible.
+
+# Tech Stack
+
+Use:
+
+- Astro
+- TypeScript
+- Tailwind CSS
+- Content Collections
+- Astro Image
+- Vercel deployment
+
+Avoid:
+
+- unnecessary React
+- Framer Motion by default
+- large animation libraries
+- heavy client-side state
+- unnecessary API routes
+- unnecessary npm packages
+
+# Architecture
+
+Use this structure:
+
+```txt
+src/
+├─ components/
+│  ├─ common/
+│  ├─ sections/
+│  └─ cards/
+├─ content/
+│  ├─ services/
+│  └─ projects/
+├─ layouts/
+├─ pages/
+├─ styles/
+└─ utils/

@@ -1,0 +1,143 @@
+---
+import Section from './Section.astro';
+import DescriptionBlocks from './DescriptionBlocks.astro';
+import QuoteButton from './QuoteButton.astro';
+import { IMAGE_SIZES } from '../config/siteConfig';
+import { cn } from '../utils/cn';
+import {
+  getBlockImageDimensions,
+  getBlockInnerSurfaceClass,
+  getImageHeightKey,
+  stripeVariant,
+} from '../utils/content-blocks';
+import type { ServiceContentBlock } from '../types';
+
+interface Props {
+  block: ServiceContentBlock;
+  blockIndex: number;
+  stripeIndex: number;
+  imageSrc: string;
+  imageAlt: string;
+  allowContentQuote: boolean;
+  sectionAriaLabel?: string;
+  sectionKey?: string;
+}
+
+const {
+  block,
+  blockIndex,
+  stripeIndex,
+  imageSrc,
+  imageAlt,
+  allowContentQuote,
+  sectionAriaLabel,
+  sectionKey,
+} = Astro.props;
+
+const imageSide = block.imageSide ?? (blockIndex % 2 === 1 ? 'left' : 'right');
+const isLeft = imageSide === 'left';
+const imageHeightKey = getImageHeightKey({
+  imageHeight: block.imageHeight,
+  imageSize: block.imageSize,
+});
+const imageDimensions = getBlockImageDimensions(imageHeightKey);
+const layout = block.layout ?? 'wrap';
+const useSideBySide = layout === 'side-by-side';
+const showQuote = allowContentQuote && block.quoteButton === true;
+const priorityImage = blockIndex === 0;
+const innerSurfaceClass = getBlockInnerSurfaceClass(block.background);
+const descriptionKeyPrefix = useSideBySide ? (isLeft ? 'sb-l' : 'sb-r') : 'wrap';
+---
+
+<Section
+  variant={stripeVariant(stripeIndex)}
+  aria-label={sectionAriaLabel}
+>
+  <div data-animate-on-scroll>
+    {
+      useSideBySide ? (
+        <div
+          class={cn(
+            'grid grid-cols-1 items-start gap-6 md:grid-cols-2 md:gap-12',
+            innerSurfaceClass,
+          )}
+        >
+          {isLeft ? (
+            <>
+              <img
+                src={imageSrc}
+                alt={imageAlt}
+                width={imageDimensions.width}
+                height={imageDimensions.height}
+                class="w-full h-auto object-cover"
+                sizes={IMAGE_SIZES.halfContainer}
+                loading={priorityImage ? 'eager' : 'lazy'}
+                fetchpriority={priorityImage ? 'high' : undefined}
+                decoding={priorityImage ? 'sync' : 'async'}
+              />
+              <div class="space-y-6">
+                <DescriptionBlocks blocks={block.description} keyPrefix={descriptionKeyPrefix} />
+                {showQuote && (
+                  <div class="mt-8">
+                    <QuoteButton />
+                  </div>
+                )}
+              </div>
+            </>
+          ) : (
+            <>
+              <div class="space-y-6">
+                <DescriptionBlocks blocks={block.description} keyPrefix={descriptionKeyPrefix} />
+                {showQuote && (
+                  <div class="mt-8">
+                    <QuoteButton />
+                  </div>
+                )}
+              </div>
+              <img
+                src={imageSrc}
+                alt={imageAlt}
+                width={imageDimensions.width}
+                height={imageDimensions.height}
+                class="w-full h-auto object-cover"
+                sizes={IMAGE_SIZES.halfContainer}
+                loading={priorityImage ? 'eager' : 'lazy'}
+                fetchpriority={priorityImage ? 'high' : undefined}
+                decoding={priorityImage ? 'sync' : 'async'}
+              />
+            </>
+          )}
+        </div>
+      ) : (
+        <div class={cn("after:clear-both after:block after:content-['']", innerSurfaceClass)}>
+          <div
+            class={cn(
+              'mb-6 w-full md:mb-8 md:w-[48%]',
+              isLeft ? 'md:float-left md:mr-12' : 'md:float-right md:ml-12',
+            )}
+          >
+            <img
+              src={imageSrc}
+              alt={imageAlt}
+              width={imageDimensions.width}
+              height={imageDimensions.height}
+              class="w-full h-auto object-cover"
+              sizes={IMAGE_SIZES.floatMd}
+              loading={priorityImage ? 'eager' : 'lazy'}
+              fetchpriority={priorityImage ? 'high' : undefined}
+              decoding={priorityImage ? 'sync' : 'async'}
+            />
+          </div>
+          <div class="space-y-6">
+            <DescriptionBlocks blocks={block.description} keyPrefix={descriptionKeyPrefix} />
+            {showQuote && (
+              <div class="mt-8">
+                <QuoteButton />
+              </div>
+            )}
+          </div>
+        </div>
+      )
+    }
+  </div>
+</Section>

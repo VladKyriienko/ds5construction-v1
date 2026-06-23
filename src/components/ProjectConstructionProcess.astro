@@ -1,0 +1,118 @@
+---
+import QuoteButton from './QuoteButton.astro';
+import { IMAGE_SIZES, SCROLL_ANIMATION_DELAY_MS } from '../config/siteConfig';
+import type { ConstructionProcessContent } from '../types';
+
+interface Props {
+  projectTitle: string;
+  content: ConstructionProcessContent;
+  showQuoteButton?: boolean;
+}
+
+const { projectTitle, content, showQuoteButton = false } = Astro.props;
+const heading = content.heading ?? 'Construction Process';
+const STAGE_ITEM_STAGGER_MS = 30;
+
+const allPhotos = content.stages.flatMap((stage, stageIndex) =>
+  stage.photos.map((photo, photoIndex) => ({
+    ...photo,
+    stageTitle: stage.title,
+    globalIndex:
+      content.stages
+        .slice(0, stageIndex)
+        .reduce((acc, s) => acc + s.photos.length, 0) + photoIndex,
+    delayOffset: content.stages
+      .slice(0, stageIndex)
+      .reduce((acc, s) => acc + s.photos.length, 0),
+  })),
+);
+---
+
+<div class="w-full" role="region" aria-labelledby="construction-process-heading">
+  <div data-animate-on-scroll data-delay={SCROLL_ANIMATION_DELAY_MS} class="w-full">
+    <h2 id="construction-process-heading" class="mb-3 text-center">{heading}</h2>
+    <p class="text-muted-foreground mb-10 w-full text-center text-base leading-relaxed max-w-5xl mx-auto">
+      {content.intro}
+    </p>
+
+    <div class="space-y-12">
+      {
+        content.stages.map((stage, stageIndex) => {
+          const offset = content.stages
+            .slice(0, stageIndex)
+            .reduce((acc, s) => acc + s.photos.length, 0);
+          const stageGridClass =
+            stage.photos.length === 1
+              ? 'mx-auto max-w-lg lg:grid-cols-1'
+              : stage.photos.length === 2
+                ? 'mx-auto max-w-4xl lg:grid-cols-2'
+                : 'lg:grid-cols-3';
+          return (
+            <div class="w-full">
+              <h3 class="mb-4 text-center font-semibold text-foreground text-lg">{stage.title}</h3>
+              <ul
+                class={`m-0 flex list-none gap-4 overflow-x-auto p-0 pb-1 no-scrollbar lg:grid lg:overflow-visible ${stageGridClass}`}
+              >
+                {
+                  stage.photos.map((photo, j) => {
+                    const globalIndex = offset + j;
+                    return (
+                      <li class="w-[85vw] shrink-0 sm:w-[42vw] lg:w-auto lg:shrink">
+                        <button
+                          type="button"
+                          data-process-lightbox
+                          data-lightbox-index={globalIndex}
+                          data-lightbox-images={JSON.stringify(allPhotos.map((p) => p.src))}
+                          data-lightbox-captions={JSON.stringify(
+                            allPhotos.map((p) => p.caption),
+                          )}
+                          data-lightbox-title={`${projectTitle} – ${heading}`}
+                          class="group block w-full cursor-zoom-in text-center"
+                        >
+                          <div class="relative aspect-4/3 w-full overflow-hidden rounded-lg border border-border bg-muted">
+                            <img
+                              src={photo.src}
+                              alt={
+                                photo.caption.trim()
+                                  ? `${stage.title}: ${photo.caption}`
+                                  : stage.title
+                              }
+                              width="440"
+                              height="330"
+                              class="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                              sizes={IMAGE_SIZES.thirdGrid}
+                              loading="lazy"
+                            />
+                          </div>
+                          {
+                            photo.caption.trim() && (
+                              <p class="mt-2 text-center text-sm text-muted-foreground leading-snug">
+                                {photo.caption}
+                              </p>
+                            )
+                          }
+                        </button>
+                      </li>
+                    );
+                  })
+                }
+              </ul>
+            </div>
+          );
+        })
+      }
+    </div>
+
+    {
+      showQuoteButton && (
+        <div class="mt-10 flex justify-center md:mt-12">
+          <QuoteButton />
+        </div>
+      )
+    }
+  </div>
+</div>
+
+<script>
+  import '../scripts/process-lightbox.ts';
+</script>

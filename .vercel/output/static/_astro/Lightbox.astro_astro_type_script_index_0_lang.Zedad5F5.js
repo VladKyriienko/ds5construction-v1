@@ -1,0 +1,1 @@
+import{_ as n}from"./preload-helper.CVfkMyKi.js";let t=null;function r(){return t??=n(()=>import("./lightbox.9UO-i6j3.js"),[]),t}document.addEventListener("open-lightbox",e=>{const o=e.detail;r().then(i=>i.openLightbox(o))},{capture:!0});

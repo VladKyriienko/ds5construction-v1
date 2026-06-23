@@ -1,0 +1,209 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PublicLayout from '../layouts/PublicLayout.astro';
+import Section from '../components/Section.astro';
+import { buildPageMetadata } from '../lib/metadata';
+import { getURL } from '../utils/helpers';
+
+const metadata = buildPageMetadata({
+  title: 'Privacy and Cookies Policy – DS5 Construction',
+  description: 'How DS5 Construction uses cookies and handles your personal data.',
+  path: 'privacy',
+});
+
+const PRIVACY_TITLE = 'Privacy and Cookies Policy';
+const PRIVACY_DESCRIPTION =
+  'How DS5 Construction uses cookies and handles your personal data.';
+const CONTACT_ADDRESS = '89-90 Paul Street, London EC2A 4NE';
+const CONTACT_EMAIL = 'info@DS5construction.co.uk';
+const EFFECTIVE_DATE_PLACEHOLDER = '26 March 2026';
+const websiteUrl = getURL();
+---
+
+<BaseLayout metadata={metadata}>
+  <PublicLayout
+    title={PRIVACY_TITLE}
+    description={PRIVACY_DESCRIPTION}
+    showHeader
+    showFooter
+  >
+    <Section>
+      <div class="prose prose-neutral dark:prose-invert max-w-[210mm] mx-auto">
+        <p class="text-sm italic text-muted-foreground mt-2 mb-6">
+          Effective Date: {EFFECTIVE_DATE_PLACEHOLDER}
+        </p>
+        <p class="text-muted-foreground mb-8">
+          Welcome to DS5 Construction Ltd. We are committed to protecting your privacy and
+          ensuring transparency about how we collect and use personal information when you visit
+          the <a href={websiteUrl} class="text-foreground underline hover:no-underline">Website</a>.
+        </p>
+
+        <section class="mb-8">
+          <h2 class="text-lg font-bold text-foreground mb-2">1. Who We Are</h2>
+          <p class="text-muted-foreground mb-3">DS5 Construction Ltd is a UK-registered company.</p>
+          <ul class="list-disc pl-6 text-muted-foreground space-y-1">
+            <li>
+              Address:{' '}
+              <a
+                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(CONTACT_ADDRESS)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-foreground underline hover:no-underline"
+              >
+                {CONTACT_ADDRESS}
+              </a>
+            </li>
+            <li>
+              Contact email:{' '}
+              <a href={`mailto:${CONTACT_EMAIL}`} class="text-foreground underline hover:no-underline">
+                {CONTACT_EMAIL}
+              </a>
+            </li>
+            <li>Company number: 14471889</li>
+          </ul>
+        </section>
+
+        <section class="mb-8">
+          <h2 class="text-lg font-bold text-foreground mb-2">2. Information We Collect</h2>
+          <p class="text-muted-foreground mb-3">
+            We may collect personal information when you interact with our Website, including:
+          </p>
+          <ul class="list-disc pl-6 text-muted-foreground space-y-1">
+            <li>Name, email address, phone number (e.g., via contact forms)</li>
+            <li>Technical data such as IP address, browser type and device data</li>
+            <li>Cookie and tracking data if you consent to non-essential cookies</li>
+          </ul>
+        </section>
+
+        <section class="mb-8">
+          <h2 class="text-lg font-bold text-foreground mb-2">3. How We Use Your Information</h2>
+          <p class="text-muted-foreground mb-3">We use personal data for purposes such as:</p>
+          <ul class="list-disc pl-6 text-muted-foreground space-y-1">
+            <li>Responding to enquiries and providing services</li>
+            <li>Improving our Website and understanding usage patterns</li>
+            <li>Complying with legal obligations under UK data protection law</li>
+          </ul>
+        </section>
+
+        <section class="mb-8">
+          <h2 class="text-lg font-bold text-foreground mb-2">4. Legal Basis for Processing</h2>
+          <p class="text-muted-foreground mb-3">
+            We process your personal data where we have a lawful basis such as:
+          </p>
+          <ul class="list-disc pl-6 text-muted-foreground space-y-1">
+            <li>Consent (e.g., for non-essential cookies)</li>
+            <li>Legitimate interests (e.g., improving service quality)</li>
+            <li>Contractual necessity (to fulfil services you request)</li>
+          </ul>
+        </section>
+
+        <section class="mb-8">
+          <h2 class="text-lg font-bold text-foreground mb-2">5. Cookies Policy</h2>
+          <p class="text-muted-foreground mb-4">
+            Our Website uses cookies and similar technologies. Cookies are small text files stored
+            on your device that may collect personal or non-personal information.
+          </p>
+          <h3 class="text-base font-bold text-foreground mb-2 mt-4">What Cookies We Use</h3>
+          <p class="text-muted-foreground font-semibold mt-2 mb-1">Strictly Necessary Cookies</p>
+          <ul class="list-disc pl-6 text-muted-foreground space-y-1 mb-4">
+            <li>Required for the Website to function (e.g., session cookies).</li>
+            <li>These do not require consent.</li>
+          </ul>
+          <p class="text-muted-foreground font-semibold mb-1">Analytics &amp; Performance Cookies</p>
+          <ul class="list-disc pl-6 text-muted-foreground space-y-1 mb-4">
+            <li>Used to measure and improve the performance of the Website (e.g., Google Analytics).</li>
+            <li>These are activated only with your consent via the cookie banner.</li>
+          </ul>
+          <p class="text-muted-foreground font-semibold mb-1">Third-Party Cookies</p>
+          <ul class="list-disc pl-6 text-muted-foreground space-y-1 mb-4">
+            <li>
+              We may include third-party content such as embedded videos, maps or social media
+              features that may drop their own cookies.
+            </li>
+          </ul>
+          <p class="text-muted-foreground font-semibold mb-2">Cookie Consent</p>
+          <p class="text-muted-foreground mb-2">
+            If you accept cookies via the banner on first visit, this indicates your consent to use
+            non-essential cookies such as analytics. You can withdraw or manage your cookie
+            preferences at any time by adjusting browser settings or using the consent controls on
+            the Website.
+          </p>
+        </section>
+
+        <section class="mb-8">
+          <h2 class="text-lg font-bold text-foreground mb-2">6. How We Share Your Data</h2>
+          <p class="text-muted-foreground mb-3">We do not sell personal data. Your data may be shared with:</p>
+          <ul class="list-disc pl-6 text-muted-foreground space-y-1">
+            <li>Third-party service providers (e.g., analytics providers)</li>
+            <li>Legal authorities where required by law</li>
+          </ul>
+        </section>
+
+        <section class="mb-8">
+          <h2 class="text-lg font-bold text-foreground mb-2">7. Data Retention</h2>
+          <p class="text-muted-foreground mb-3">We retain personal information only as long as necessary for:</p>
+          <ul class="list-disc pl-6 text-muted-foreground space-y-1">
+            <li>The purpose for which it was collected</li>
+            <li>Fulfilling legal or regulatory requirements</li>
+          </ul>
+        </section>
+
+        <section class="mb-8">
+          <h2 class="text-lg font-bold text-foreground mb-2">8. Your Rights</h2>
+          <p class="text-muted-foreground mb-3">Under UK GDPR, you may have rights including:</p>
+          <ul class="list-disc pl-6 text-muted-foreground space-y-1 mb-3">
+            <li>The right to access your personal data</li>
+            <li>The right to correct inaccurate data</li>
+            <li>The right to object to processing</li>
+            <li>The right to withdraw consent where processing is based on consent</li>
+          </ul>
+          <p class="text-muted-foreground">
+            If you wish to exercise your rights, contact us at{' '}
+            <a href={`mailto:${CONTACT_EMAIL}`} class="text-foreground underline hover:no-underline">
+              {CONTACT_EMAIL}
+            </a>.
+          </p>
+        </section>
+
+        <section class="mb-8">
+          <h2 class="text-lg font-bold text-foreground mb-2">9. Security</h2>
+          <p class="text-muted-foreground">
+            We use appropriate technical and organisational measures to protect personal data from
+            loss, misuse or unauthorised access.
+          </p>
+        </section>
+
+        <section class="mb-8">
+          <h2 class="text-lg font-bold text-foreground mb-2">10. Changes to this Policy</h2>
+          <p class="text-muted-foreground">
+            We may update this policy from time to time. The latest version will be published on
+            this page with the updated effective date.
+          </p>
+        </section>
+
+        <section class="mb-4">
+          <h2 class="text-lg font-bold text-foreground mb-2">11. Contact Information</h2>
+          <p class="text-muted-foreground">
+            If you have questions about this policy or your data, contact us at:
+          </p>
+          <p class="text-muted-foreground mt-2">
+            Email:{' '}
+            <a href={`mailto:${CONTACT_EMAIL}`} class="text-foreground underline hover:no-underline">
+              {CONTACT_EMAIL}
+            </a>
+            <br />
+            Address:{' '}
+            <a
+              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(CONTACT_ADDRESS)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-foreground underline hover:no-underline"
+            >
+              {CONTACT_ADDRESS}
+            </a>
+          </p>
+        </section>
+      </div>
+    </Section>
+  </PublicLayout>
+</BaseLayout>

@@ -1,0 +1,45 @@
+---
+import Button from './common/Button.astro';
+---
+
+<div
+  data-cookie-backdrop
+  class="fixed inset-0 z-99 bg-black/25 dark:bg-black/45 backdrop-blur-[1px] hidden"
+  aria-hidden="true"
+></div>
+
+<div
+  data-cookie-popup
+  role="dialog"
+  aria-label="Cookie consent"
+  aria-live="polite"
+  class="fixed inset-x-0 bottom-0 z-100 bg-muted/95 backdrop-blur-sm border-t border-border max-h-[85vh] overflow-y-auto hidden"
+>
+  <div class="container mx-auto px-4 py-4">
+    <div class="grid gap-4 md:grid-cols-[1fr_auto] md:items-start">
+      <div class="text-sm text-muted-foreground pr-1">
+        <div>
+          <span class="font-semibold text-foreground">We use cookies</span>: we use cookies to make
+          our website work, remember your preferences and understand how you use it.
+        </div>
+        <div>
+          You can accept all cookies or choose necessary cookies only. For details, please read our{' '}
+          <a
+            href="/privacy"
+            class="text-foreground underline underline-offset-4 hover:no-underline"
+          >
+            Privacy Policy
+          </a>.
+        </div>
+      </div>
+      <div class="flex gap-2 sm:justify-end md:pt-0">
+        <Button type="button" data-cookie-accept-all aria-label="Accept all cookies">
+          Accept all cookies
+        </Button>
+        <Button type="button" variant="secondary" data-cookie-necessary aria-label="Necessary only">
+          Necessary only
+        </Button>
+      </div>
+    </div>
+  </div>
+</div>

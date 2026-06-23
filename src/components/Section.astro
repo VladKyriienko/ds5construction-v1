@@ -1,0 +1,29 @@
+---
+import { cn } from '../utils/cn';
+import type { SectionProps, SectionVariant } from '../types';
+
+interface Props extends SectionProps {}
+
+const {
+  id,
+  'aria-label': ariaLabel,
+  variant = 'default',
+  class: className,
+} = Astro.props;
+
+const variantClasses: Record<SectionVariant, string> = {
+  default: 'py-10 md:py-20',
+  muted: 'py-10 md:py-20 bg-muted/50',
+  tight: 'pt-5 md:pt-10',
+};
+---
+
+<section
+  id={id}
+  aria-label={ariaLabel}
+  class={cn(variantClasses[variant], className)}
+>
+  <div class="container mx-auto">
+    <slot />
+  </div>
+</section>

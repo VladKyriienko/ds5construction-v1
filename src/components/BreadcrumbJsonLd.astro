@@ -1,0 +1,13 @@
+---
+import type { BreadcrumbItem } from '../lib/breadcrumb-json-ld';
+import { getBreadcrumbJsonLd } from '../lib/breadcrumb-json-ld';
+
+interface Props {
+  items: BreadcrumbItem[];
+}
+
+const { items } = Astro.props;
+const jsonLd = getBreadcrumbJsonLd(items);
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />

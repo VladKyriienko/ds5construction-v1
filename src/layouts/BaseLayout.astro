@@ -1,0 +1,73 @@
+---
+import '../styles/global.css';
+import gilroyRegular from '../fonts/gilroy-regular.woff2?url';
+import gilroyBold from '../fonts/gilroy-bold.woff2?url';
+import type { PageMetadata } from '../lib/metadata';
+import { COMING_SOON, DEFAULT_THEME } from '../config/siteConfig';
+import ThemeScript from '../components/ThemeScript.astro';
+import LocalBusinessJsonLd from '../components/LocalBusinessJsonLd.astro';
+import ComingSoon from '../components/ComingSoon.astro';
+
+interface Props {
+  metadata: PageMetadata;
+  showLocalBusinessJsonLd?: boolean;
+}
+
+const { metadata, showLocalBusinessJsonLd = true } = Astro.props;
+const { title, description, canonical, image } = metadata;
+---
+
+<!doctype html>
+<html lang="en" class:list={[DEFAULT_THEME]}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="preload"
+      href={gilroyRegular}
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href={gilroyBold}
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {canonical && <link rel="canonical" href={canonical} />}
+    <link rel="icon" type="image/png" href="/icons/image.png" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    {image && <meta property="og:image" content={image} />}
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    {image && <meta name="twitter:image" content={image} />}
+    {metadata.preloadImage && (
+      <link
+        rel="preload"
+        as="image"
+        href={metadata.preloadImage.href}
+        imagesrcset={metadata.preloadImage.srcset}
+        imagesizes={metadata.preloadImage.sizes}
+        fetchpriority="high"
+      />
+    )}
+    {!COMING_SOON && <ThemeScript />}
+  </head>
+  <body>
+    {COMING_SOON ? (
+      <ComingSoon />
+    ) : (
+      <>
+        {showLocalBusinessJsonLd && <LocalBusinessJsonLd />}
+        <slot />
+      </>
+    )}
+  </body>
+</html>

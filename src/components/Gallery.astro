@@ -1,0 +1,138 @@
+---
+import { GALLERY_FALLBACK_IMAGE, IMAGE_SIZES } from '../config/siteConfig';
+import Icon from './common/Icon.astro';
+
+interface Props {
+  images: string[];
+  title: string;
+  showThumbnails?: boolean;
+}
+
+const { images, title, showThumbnails = true } = Astro.props;
+const list = images.length > 0 ? images : [GALLERY_FALLBACK_IMAGE];
+const isSingle = list.length <= 1;
+const slides = isSingle ? list : [list[list.length - 1], ...list, list[0]];
+---
+
+<section
+  class="mx-auto w-full"
+  data-gallery
+  data-images={JSON.stringify(list)}
+  data-title={title}
+  data-show-thumbnails={String(showThumbnails)}
+>
+  {
+    isSingle ? (
+      <div class="relative aspect-4/3 lg:aspect-16/10 w-full overflow-hidden rounded-lg border border-border bg-muted">
+        <img
+          src={list[0]?.startsWith('/') ? list[0] : GALLERY_FALLBACK_IMAGE}
+          alt={`${title} – photo 1`}
+          width="1400"
+          height="875"
+          class="absolute inset-0 h-full w-full object-cover pointer-events-none"
+          sizes={IMAGE_SIZES.galleryMain}
+        />
+        <button
+          type="button"
+          data-gallery-lightbox
+          class="absolute inset-0 z-1 cursor-zoom-in"
+          aria-label="Open fullscreen view"
+        ></button>
+      </div>
+    ) : (
+      <div class="relative aspect-4/3 lg:aspect-16/10 w-full overflow-hidden rounded-lg border border-border bg-muted touch-pan-y">
+        <div
+          data-gallery-track
+          class="flex h-full ease-out"
+          style={`width: ${slides.length * 100}%; transform: translateX(-${100 / slides.length}%);`}
+        >
+          {
+            slides.map((src, index) => {
+              const validSrc = src?.startsWith('/') ? src : GALLERY_FALLBACK_IMAGE;
+              const photoIndex =
+                index === 0 ? list.length : index === slides.length - 1 ? 1 : index;
+              return (
+                <div
+                  class="relative shrink-0 h-full"
+                  style={`width: ${100 / slides.length}%`}
+                >
+                  <img
+                    src={validSrc}
+                    alt={`${title} – photo ${photoIndex}`}
+                    width="1400"
+                    height="875"
+                    class="absolute inset-0 h-full w-full object-cover pointer-events-none"
+                    sizes={IMAGE_SIZES.galleryMain}
+                    loading={index === 1 ? 'eager' : 'lazy'}
+                  />
+                </div>
+              );
+            })
+          }
+        </div>
+        <button
+          type="button"
+          data-gallery-lightbox
+          class="absolute inset-0 z-1 cursor-zoom-in"
+          aria-label="Open fullscreen view"
+        ></button>
+        <button
+          type="button"
+          data-gallery-prev
+          class="absolute left-2 top-1/2 -translate-y-1/2 z-10 size-10 rounded-full bg-muted/20 flex items-center justify-center hover:bg-muted/40 transition-colors text-foreground"
+          aria-label="Previous image"
+        >
+          <Icon name="ChevronLeft" class="size-5" />
+        </button>
+        <button
+          type="button"
+          data-gallery-next
+          class="absolute right-2 top-1/2 -translate-y-1/2 z-10 size-10 rounded-full bg-muted/20 flex items-center justify-center hover:bg-muted/40 transition-colors text-foreground"
+          aria-label="Next image"
+        >
+          <Icon name="ChevronRight" class="size-5" />
+        </button>
+      </div>
+    )
+  }
+
+  <div class="mt-1 flex flex-col items-center gap-1">
+    {
+      showThumbnails && !isSingle && (
+        <div data-gallery-thumbs class="w-full flex gap-2 overflow-x-auto overflow-y-hidden py-1 no-scrollbar">
+          {
+            list.map((src, index) => {
+              const validSrc = src?.startsWith('/') ? src : GALLERY_FALLBACK_IMAGE;
+              return (
+                <button
+                  type="button"
+                  data-thumb-index={index}
+                  class="relative size-20 shrink-0 overflow-hidden rounded border-2 transition-colors md:size-24 border-border hover:border-muted-foreground/50"
+                  aria-label={`View photo ${index + 1}`}
+                  aria-pressed="false"
+                >
+                  <img
+                    src={validSrc}
+                    alt=""
+                    width="96"
+                    height="96"
+                    class="absolute inset-0 h-full w-full object-cover"
+                    sizes={IMAGE_SIZES.galleryThumb}
+                    loading="lazy"
+                  />
+                </button>
+              );
+            })
+          }
+        </div>
+      )
+    }
+    <p data-gallery-counter class="text-sm text-muted-foreground tabular-nums">
+      1/{list.length}
+    </p>
+  </div>
+</section>
+
+<script>
+  import '../scripts/gallery.ts';
+</script>

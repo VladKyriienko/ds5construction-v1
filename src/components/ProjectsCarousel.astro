@@ -1,0 +1,116 @@
+---
+import { cn } from '../utils/cn';
+import Button from './common/Button.astro';
+import type { DescriptionBlock, ProjectWithCleanDescription } from '../types';
+import { IMAGE_SIZES } from '../config/siteConfig';
+import { stripHtml } from '../utils/stripHtml';
+
+interface Props {
+  projects: readonly ProjectWithCleanDescription[];
+  class?: string;
+}
+
+const { projects, class: className } = Astro.props;
+const imageFallback = '/photo/hero.webp';
+---
+
+{
+  projects.length > 0 && (
+    <div data-animate-on-scroll data-delay="100" class={cn('relative', className)}>
+      <div
+        class="relative w-full"
+        data-embla
+        data-loop={String(projects.length > 1)}
+        data-align="center"
+        data-projects-carousel
+      >
+        <div class="overflow-hidden" data-embla-viewport>
+          <div class="flex -ml-3 sm:-ml-4 md:-ml-5">
+            {
+              projects.map((project, index) => (
+                <div
+                  class="pl-3 sm:pl-4 md:pl-5 basis-full md:basis-[68%] md:min-w-0 lg:basis-[65%] min-w-0 shrink-0 grow-0"
+                  data-embla-slide
+                  data-project-slug={project.slug}
+                >
+                  <div class="origin-center transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform py-2 md:py-4 md:scale-[0.92] md:opacity-80 data-[active=true]:md:scale-[1.06] data-[active=true]:md:z-10 data-[active=true]:md:opacity-100">
+                    <article class="group relative aspect-4/3 w-full overflow-hidden rounded-lg shadow-md md:shadow-lg">
+                      <img
+                        src={project.image ?? imageFallback}
+                        alt={project.title}
+                        width="880"
+                        height="660"
+                        class="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        sizes={IMAGE_SIZES.projectsCarousel}
+                        loading="lazy"
+                      />
+                      <div class="absolute bottom-0 left-0 right-0 bg-black/70 dark:bg-black/80 px-4 py-4 z-5">
+                        <h3 class="text-primary-foreground text-lg sm:text-xl">{project.title}</h3>
+                      </div>
+                      <div class="absolute inset-2 sm:inset-3 bg-background/80 z-10 flex flex-col items-center p-4 sm:p-6 text-center opacity-0 transition-opacity duration-300 group-hover:opacity-100 rounded-md overflow-hidden">
+                        <h3 class="text-lg sm:text-xl shrink-0">{project.title}</h3>
+                        <div class="text-foreground/95 text-base sm:text-lg mt-3 flex-1 min-h-0 overflow-hidden max-w-full text-left line-clamp-10">
+                          {
+                            (project.description ?? project.blocks?.[0]?.description ?? []).map(
+                              (block: DescriptionBlock, i: number, blocks: DescriptionBlock[]) => (
+                                <span>
+                                  {block.title ? (
+                                    <>
+                                      <strong class="block mt-2 first:mt-0">{block.title}</strong>
+                                      <span>{stripHtml(block.text)}</span>
+                                    </>
+                                  ) : (
+                                    stripHtml(block.text)
+                                  )}
+                                  {i < blocks.length - 1 ? ' ' : null}
+                                </span>
+                              ),
+                            )
+                          }
+                        </div>
+                        <Button
+                          href={`/projects/${project.slug}`}
+                          class="mt-4 self-center"
+                          data-carousel-project-link
+                        >
+                          Read more
+                        </Button>
+                      </div>
+                    </article>
+                  </div>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+        {
+          projects.length > 1 && (
+            <>
+              <button
+                type="button"
+                data-embla-prev
+                class="hidden md:flex absolute -left-2 lg:-left-4 top-1/2 -translate-y-1/2 h-8 w-8 items-center justify-center rounded-full border bg-background/90 shadow-md"
+                aria-label="Previous slide"
+              >
+                ‹
+              </button>
+              <button
+                type="button"
+                data-embla-next
+                class="hidden md:flex absolute -right-2 lg:-right-4 top-1/2 -translate-y-1/2 h-8 w-8 items-center justify-center rounded-full border bg-background/90 shadow-md"
+                aria-label="Next slide"
+              >
+                ›
+              </button>
+            </>
+          )
+        }
+      </div>
+    </div>
+  )
+}
+
+<script>
+  import '../scripts/embla.ts';
+  import '../scripts/projects-carousel.ts';
+</script>

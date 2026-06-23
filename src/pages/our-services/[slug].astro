@@ -1,0 +1,133 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PublicLayout from '../../layouts/PublicLayout.astro';
+import BackLink from '../../components/BackLink.astro';
+import BreadcrumbJsonLd from '../../components/BreadcrumbJsonLd.astro';
+import QuoteButton from '../../components/QuoteButton.astro';
+import Section from '../../components/Section.astro';
+import HaveAQuestionSection from '../../components/HaveAQuestionSection.astro';
+import WhyWorkWithUs from '../../components/WhyWorkWithUs.astro';
+import ContentBlockSection from '../../components/ContentBlockSection.astro';
+import PortfolioGallerySection from '../../components/PortfolioGallerySection.astro';
+import Lightbox from '../../components/Lightbox.astro';
+import { buildPageMetadata, DEFAULT_OG_IMAGE } from '../../lib/metadata';
+import { stripeVariant } from '../../utils/content-blocks';
+import { stripHtml } from '../../utils/stripHtml';
+import { getServiceBySlug, getPublishedServiceSlugs } from '../../utils/data';
+import type { ServiceContentBlock } from '../../types';
+
+const CAROUSEL_IMAGE_FALLBACK = '/photo/hero.webp';
+
+export async function getStaticPaths() {
+  return getPublishedServiceSlugs().map((slug) => ({ params: { slug } }));
+}
+
+const { slug } = Astro.params;
+const service = slug ? getServiceBySlug(slug) : undefined;
+
+if (!service) {
+  return Astro.redirect('/404');
+}
+
+const metadata = buildPageMetadata({
+  title: `${service.title} – DS5 Construction`,
+  description: stripHtml(service.description[0]?.text ?? service.title),
+  path: `our-services/${slug}`,
+  image: service.image ?? DEFAULT_OG_IMAGE,
+});
+
+const image = service.image ?? CAROUSEL_IMAGE_FALLBACK;
+const contentBlocks: ServiceContentBlock[] =
+  service.blocks && service.blocks.length > 0
+    ? service.blocks
+    : [
+        {
+          description: service.description,
+          ...(service.image !== undefined ? { image: service.image } : {}),
+        },
+      ];
+
+const allowContentQuote = service.showQuoteInContent !== false;
+const showGallery = service.showGallery !== false;
+const quotePlacedOnBlocks = contentBlocks.some((b) => b.quoteButton === true);
+const showQuoteFooter = allowContentQuote && !quotePlacedOnBlocks;
+
+const n = contentBlocks.length;
+const baseAfterQuote = n + (showQuoteFooter ? 1 : 0);
+const stripe = {
+  block: (i: number) => i,
+  quote: n,
+  gallery: baseAfterQuote,
+  why: baseAfterQuote + (showGallery ? 1 : 0),
+  contact: baseAfterQuote + (showGallery ? 1 : 0) + 1,
+};
+
+const multiBlock = contentBlocks.length > 1;
+---
+
+<BaseLayout metadata={metadata}>
+  <PublicLayout showHeader showFooter>
+    <BreadcrumbJsonLd
+      items={[
+        { name: 'Home', path: '' },
+        { name: 'Our Services', path: 'our-services' },
+        { name: service.title, path: `our-services/${slug}` },
+      ]}
+    />
+
+    <Section variant="tight" class="pb-0 md:pb-0">
+      <BackLink />
+    </Section>
+
+    <Section variant="tight" class="pt-2 md:pt-2">
+      <div class="text-center">
+        <h1>{service.title}</h1>
+      </div>
+    </Section>
+
+    {
+      contentBlocks.map((section, sectionIndex) => (
+        <ContentBlockSection
+          block={section}
+          blockIndex={sectionIndex}
+          stripeIndex={stripe.block(sectionIndex)}
+          imageSrc={section.image ?? image}
+          imageAlt={
+            multiBlock ? `${service.title} – section ${sectionIndex + 1}` : service.title
+          }
+          allowContentQuote={allowContentQuote}
+          sectionAriaLabel={
+            multiBlock ? `${service.title} – part ${sectionIndex + 1}` : undefined
+          }
+        />
+      ))
+    }
+
+    {
+      showQuoteFooter && (
+        <Section variant={stripeVariant(stripe.quote)} class="py-8 md:py-12">
+          <div data-animate-on-scroll>
+            <QuoteButton />
+          </div>
+        </Section>
+      )
+    }
+
+    {
+      showGallery && (
+        <PortfolioGallerySection
+          heading="Service Portfolio"
+          images={
+            service.gallery && service.gallery.length ? [...service.gallery] : [image]
+          }
+          galleryTitle={service.title}
+          variant={stripeVariant(stripe.gallery)}
+        />
+      )
+    }
+
+    <WhyWorkWithUs variant={stripeVariant(stripe.why)} />
+    <HaveAQuestionSection variant={stripeVariant(stripe.contact)} />
+    <Lightbox />
+  </PublicLayout>
+</BaseLayout>

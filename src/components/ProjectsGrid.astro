@@ -1,0 +1,21 @@
+---
+import ProjectCard from './ProjectCard.astro';
+import type { ProjectWithCleanDescription } from '../types';
+
+interface Props {
+  projects: readonly ProjectWithCleanDescription[];
+}
+
+const { projects } = Astro.props;
+const STAGGER_DELAY_MS = 80;
+---
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+  {
+    projects.map((project, index) => (
+      <div data-animate-on-scroll data-delay={index * STAGGER_DELAY_MS}>
+        <ProjectCard project={project} priority={index === 0} />
+      </div>
+    ))
+  }
+</div>

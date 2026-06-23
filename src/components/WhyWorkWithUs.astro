@@ -1,0 +1,94 @@
+---
+import { cn } from '../utils/cn';
+import Icon from './common/Icon.astro';
+import type { WhyWorkWithUsItem, WhyWorkWithUsProps } from '../types';
+
+interface Props extends WhyWorkWithUsProps {}
+
+const DEFAULT_TITLE = 'Why Work With Us';
+const DEFAULT_SUBTITLE =
+  'We coordinate and manage every stage of your project, keeping the process organised, efficient and on schedule.';
+const DEFAULT_ITEMS: WhyWorkWithUsItem[] = [
+  {
+    title: 'End-to-End Project Management',
+    subtitle: 'The process is organised, efficient, and in control from start to finish.',
+    icon: 'ClipboardList',
+  },
+  {
+    title: 'Built\nAround Quality',
+    subtitle: 'We maintain high standards on every project.',
+    icon: 'Award',
+  },
+  {
+    title: 'Practical, Bespoke Solutions',
+    subtitle: 'Each project is shaped around the property and the brief.',
+    icon: 'Lightbulb',
+  },
+  {
+    title: 'Access to Trade\nPricing',
+    subtitle: 'We work with trusted suppliers. This helps secure favourable material rates.',
+    icon: 'Coins',
+  },
+  {
+    title: 'Compliance with UK Regulations',
+    subtitle: 'All work follows current UK Building Regulations and industry standards.',
+    icon: 'ShieldCheck',
+  },
+  {
+    title: 'Clear Cost\nBreakdown',
+    subtitle: 'We provide a detailed, transparent cost breakdown.',
+    icon: 'Calculator',
+  },
+  {
+    title: '£10M Public & Products Liability',
+    subtitle: 'Comprehensive cover for public and product-related risks.',
+    icon: 'ShieldCheck',
+  },
+  {
+    title: "£10M Employer's Liability Insurance",
+    subtitle: "Full employer's liability cover, ensuring protection for everyone working on site.",
+    icon: 'Umbrella',
+  },
+];
+
+const {
+  title = DEFAULT_TITLE,
+  subtitle = DEFAULT_SUBTITLE,
+  items = DEFAULT_ITEMS,
+  variant = 'default',
+  class: className,
+} = Astro.props;
+---
+
+{
+  items.length > 0 && (
+    <section
+      class={cn('py-10 md:py-20', variant === 'muted' && 'bg-muted/50', className)}
+    >
+      <div class="container mx-auto" data-animate-on-scroll data-delay="0">
+        <h2 class="text-center mb-4">{title}</h2>
+        <p class="text-muted-foreground text-center mb-10 max-w-4xl mx-auto">{subtitle}</p>
+        <div class="grid gap-5 sm:gap-6 items-stretch grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+          {
+            items.map((item, index) => (
+              <div data-animate-on-scroll data-delay={index * 80} class="h-full min-h-0">
+                <div class="flex h-full min-h-0 flex-col rounded-xl border bg-card p-5 text-center shadow-sm transition-shadow duration-200 hover:shadow-md hover:border-primary/15 md:p-6">
+                  <Icon
+                    name={item.icon ?? 'CheckCircle2'}
+                    class="h-16 w-16 shrink-0 text-primary mx-auto mb-3"
+                  />
+                  <h2 class="whitespace-pre-line font-semibold text-balance text-xl leading-snug">
+                    {item.title}
+                  </h2>
+                  <p class="mt-3 flex-1 text-sm text-muted-foreground leading-relaxed text-pretty">
+                    {item.subtitle}
+                  </p>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+  )
+}

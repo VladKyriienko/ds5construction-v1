@@ -1,0 +1,36 @@
+---
+import { getGoogleMapsEmbedSrc } from '../config/siteConfig';
+
+const GOOGLE_MAPS_EMBED_SRC = getGoogleMapsEmbedSrc();
+---
+
+<div
+  data-contact-map
+  data-embed-src={GOOGLE_MAPS_EMBED_SRC}
+  class="contact-map-shell relative aspect-video w-full min-h-[300px] overflow-hidden rounded-xl border border-border bg-card shadow-sm"
+>
+  <button
+    type="button"
+    data-contact-map-load
+    class="flex h-full w-full flex-col items-center justify-center gap-3 bg-muted/40 p-6 text-center transition-colors hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+  >
+    <span class="text-sm font-semibold uppercase tracking-widest text-muted-foreground">
+      Map
+    </span>
+    <span class="text-base text-foreground">
+      Click to load Google Maps
+    </span>
+    <span class="text-sm text-muted-foreground">
+      DS5 Construction LTD, 90 Paul St, London EC2A 4NE
+    </span>
+  </button>
+  <div
+    class="pointer-events-none absolute inset-0 bg-linear-to-t from-background/20 via-transparent to-transparent"
+    aria-hidden="true"
+  >
+  </div>
+</div>
+
+<script>
+  import '../scripts/contact-map.ts';
+</script>
