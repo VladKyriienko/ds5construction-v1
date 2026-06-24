@@ -1,0 +1,1 @@
+function h(t){document.dispatchEvent(new CustomEvent("open-lightbox",{detail:t}))}function i(t){document.dispatchEvent(new CustomEvent("lightbox-index-change",{detail:t}))}function c(t){document.dispatchEvent(new CustomEvent("lightbox-closed",{detail:t}))}function s(t,n){return t.length===n.length&&t.every((e,o)=>e===n[o])}export{i as a,c as b,h as d,s as l};

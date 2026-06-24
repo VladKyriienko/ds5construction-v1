@@ -1,12 +1,9 @@
 ---
 import { GALLERY_FALLBACK_IMAGE, IMAGE_SIZES } from '../config/siteConfig';
+import type { GalleryProps } from '../types';
 import Icon from './common/Icon.astro';
 
-interface Props {
-  images: string[];
-  title: string;
-  showThumbnails?: boolean;
-}
+interface Props extends GalleryProps {}
 
 const { images, title, showThumbnails = true } = Astro.props;
 const list = images.length > 0 ? images : [GALLERY_FALLBACK_IMAGE];

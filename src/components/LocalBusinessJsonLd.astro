@@ -1,7 +1,8 @@
 ---
 import { getLocalBusinessJsonLd } from '../lib/local-business-json-ld';
+import { readGoogleReviewsSchemaData } from '../lib/google-reviews';
 
-const jsonLd = getLocalBusinessJsonLd();
+const jsonLd = getLocalBusinessJsonLd(readGoogleReviewsSchemaData());
 ---
 
 <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />

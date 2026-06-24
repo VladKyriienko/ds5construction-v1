@@ -60,7 +60,7 @@ const allPhotos = content.stages.flatMap((stage, stageIndex) =>
                       <li class="w-[85vw] shrink-0 sm:w-[42vw] lg:w-auto lg:shrink">
                         <button
                           type="button"
-                          data-process-lightbox
+                          data-open-lightbox
                           data-lightbox-index={globalIndex}
                           data-lightbox-images={JSON.stringify(allPhotos.map((p) => p.src))}
                           data-lightbox-captions={JSON.stringify(
@@ -112,7 +112,3 @@ const allPhotos = content.stages.flatMap((stage, stageIndex) =>
     }
   </div>
 </div>
-
-<script>
-  import '../scripts/process-lightbox.ts';
-</script>

@@ -18,7 +18,12 @@ export default defineConfig({
     plugins: [tailwindcss()],
     server: {
       watch: {
-        ignored: ['**/.vercel/**', '**/dist/**'],
+        ignored: [
+          '**/.vercel/**',
+          '**/dist/**',
+          '**/.astro/**',
+          '**/node_modules/.vite/**',
+        ],
       },
     },
   },

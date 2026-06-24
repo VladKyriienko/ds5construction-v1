@@ -3,6 +3,18 @@ import {
   GALLERY_FALLBACK_IMAGE,
   GALLERY_TRANSITION_MS,
 } from '../config/siteConfig';
+import {
+  enableLoopTransitions,
+  handleLoopTransitionEnd,
+  loopRealIndex,
+  shouldHandleLoopTransitionEnd,
+  withLoopSlides,
+} from './carousel-loop';
+import {
+  dispatchOpenLightbox,
+  lightboxImagesMatch,
+  type LightboxIndexChangeDetail,
+} from './open-lightbox-event';
 
 function initGalleries() {
   document
@@ -15,13 +27,13 @@ function initGalleries() {
         root.dataset.images ?? '[]',
       ) as string[];
       const title = root.dataset.title ?? 'Gallery';
-      const showThumbnails =
-        root.dataset.showThumbnails !== 'false';
       const list =
         images.length > 0
           ? images
           : [GALLERY_FALLBACK_IMAGE];
-      const isSingle = list.length <= 1;
+      const { slides, isSingle, initialIndex } =
+        withLoopSlides(list);
+      const slideCount = slides.length;
 
       const track = root.querySelector<HTMLElement>(
         '[data-gallery-track]',
@@ -45,22 +57,20 @@ function initGalleries() {
 
       if (!track || !counter) return;
 
-      const slides = isSingle
-        ? list
-        : [list[list.length - 1], ...list, list[0]];
-      const slideCount = slides.length;
-      let selectedIndex = isSingle ? 0 : 1;
-      let isTransitioning = true;
+      let selectedIndex = initialIndex;
+      let isTransitioning = false;
+      let isGalleryInView = false;
       let autoplayTimer: ReturnType<
         typeof setInterval
       > | null = null;
 
-      const realIndex = () => {
-        if (isSingle) return 0;
-        if (selectedIndex === 0) return list.length - 1;
-        if (selectedIndex === slideCount - 1) return 0;
-        return selectedIndex - 1;
-      };
+      const realIndex = () =>
+        loopRealIndex(
+          selectedIndex,
+          list.length,
+          slideCount,
+          isSingle,
+        );
 
       const update = () => {
         track.style.transform = `translateX(-${selectedIndex * (100 / slideCount)}%)`;
@@ -92,6 +102,24 @@ function initGalleries() {
           });
       };
 
+      const syncToRealIndex = (index: number) => {
+        if (isSingle) return;
+        const nextIndex = Math.min(
+          Math.max(index + 1, 1),
+          slideCount - 2,
+        );
+        if (selectedIndex === nextIndex) {
+          update();
+          return;
+        }
+        isTransitioning = false;
+        selectedIndex = nextIndex;
+        update();
+        enableLoopTransitions((transitioning) => {
+          isTransitioning = transitioning;
+        });
+      };
+
       const goTo = (index: number) => {
         selectedIndex = index;
         update();
@@ -114,25 +142,20 @@ function initGalleries() {
         stopAutoplay();
       };
 
-      track.addEventListener('transitionend', () => {
-        if (isSingle) return;
-        if (selectedIndex === 0) {
-          isTransitioning = false;
-          selectedIndex = slideCount - 2;
-          update();
-          requestAnimationFrame(() => {
-            isTransitioning = true;
+      track.addEventListener('transitionend', (event) => {
+        if (!shouldHandleLoopTransitionEnd(event, track))
+          return;
+        handleLoopTransitionEnd(
+          selectedIndex,
+          slideCount,
+          isSingle,
+          (index, transitioning) => {
+            selectedIndex = index;
+            isTransitioning = transitioning;
             update();
-          });
-        } else if (selectedIndex === slideCount - 1) {
-          isTransitioning = false;
-          selectedIndex = 1;
-          update();
-          requestAnimationFrame(() => {
-            isTransitioning = true;
-            update();
-          });
-        }
+          },
+          track,
+        );
       });
 
       prevBtn?.addEventListener('click', (e) => {
@@ -157,16 +180,11 @@ function initGalleries() {
         });
 
       lightboxTrigger?.addEventListener('click', () => {
-        document.dispatchEvent(
-          new CustomEvent('open-lightbox', {
-            detail: {
-              images: list,
-              title,
-              index: realIndex(),
-            },
-          }),
-        );
-        stopAutoplay();
+        dispatchOpenLightbox({
+          images: list,
+          title,
+          index: realIndex(),
+        });
       });
 
       const stopAutoplay = () => {
@@ -177,20 +195,119 @@ function initGalleries() {
       };
 
       const startAutoplay = () => {
-        if (isSingle || autoplayTimer) return;
+        if (
+          isSingle ||
+          autoplayTimer ||
+          !isGalleryInView ||
+          document.hidden ||
+          root.dataset.autoplayPaused === 'true'
+        ) {
+          return;
+        }
         autoplayTimer = setInterval(
           goNext,
           GALLERY_AUTOPLAY_INTERVAL_MS,
         );
       };
 
-      if (!isSingle) {
-        root.addEventListener('mouseenter', stopAutoplay);
-        root.addEventListener('mouseleave', startAutoplay);
-        startAutoplay();
+      const setGalleryInView = (inView: boolean) => {
+        isGalleryInView = inView;
+        if (!inView) {
+          stopAutoplay();
+          return;
+        }
+        if (root.dataset.autoplayPaused !== 'true') {
+          startAutoplay();
+        }
+      };
+
+      const pauseForLightbox = () => {
+        root.dataset.autoplayPaused = 'true';
+        stopAutoplay();
+      };
+
+      const resumeAfterLightbox = (event: Event) => {
+        delete root.dataset.autoplayPaused;
+        const detail = (
+          event as CustomEvent<
+            LightboxIndexChangeDetail | undefined
+          >
+        ).detail;
+        if (
+          detail &&
+          lightboxImagesMatch(detail.images, list)
+        ) {
+          syncToRealIndex(detail.index);
+        }
+        if (isGalleryInView && !document.hidden) {
+          startAutoplay();
+        }
+      };
+
+      const onLightboxIndexChange = (event: Event) => {
+        const detail = (
+          event as CustomEvent<LightboxIndexChangeDetail>
+        ).detail;
+        if (!lightboxImagesMatch(detail.images, list))
+          return;
+        syncToRealIndex(detail.index);
+      };
+
+      document.addEventListener(
+        'open-lightbox',
+        pauseForLightbox,
+      );
+      document.addEventListener(
+        'lightbox-closed',
+        resumeAfterLightbox,
+      );
+      document.addEventListener(
+        'lightbox-index-change',
+        onLightboxIndexChange,
+      );
+
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          stopAutoplay();
+          return;
+        }
+        if (
+          isGalleryInView &&
+          root.dataset.autoplayPaused !== 'true'
+        ) {
+          startAutoplay();
+        }
+      });
+
+      if (typeof IntersectionObserver !== 'undefined') {
+        const observer = new IntersectionObserver(
+          ([entry]) => {
+            if (!entry?.isIntersecting) {
+              setGalleryInView(false);
+              return;
+            }
+
+            const rect = entry.boundingClientRect;
+            const visibleWidth = Math.max(
+              0,
+              Math.min(rect.right, window.innerWidth) -
+                Math.max(rect.left, 0),
+            );
+            const widthRatio =
+              visibleWidth / (rect.width || 1);
+            setGalleryInView(widthRatio >= 0.5);
+          },
+          { threshold: [0, 0.5] },
+        );
+        observer.observe(root);
+      } else {
+        setGalleryInView(true);
       }
 
       update();
+      enableLoopTransitions((transitioning) => {
+        isTransitioning = transitioning;
+      });
     });
 }
 

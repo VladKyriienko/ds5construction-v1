@@ -1,7 +1,4 @@
-import type {
-  DescriptionBlock,
-  ServiceBlockBackground,
-} from '../types';
+import type { ServiceBlockBackground } from '../types';
 import { SERVICE_BLOCK_BACKGROUNDS } from '../types';
 
 export type ImageHeightKey =
@@ -87,19 +84,4 @@ export function getBlockInnerSurfaceClass(
   return surface === 'card'
     ? 'rounded-xl border border-border bg-card px-4 py-8 shadow-sm sm:px-6 md:px-8 md:py-10'
     : '';
-}
-
-export function formatDescriptionPreview(
-  blocks: DescriptionBlock[],
-): string {
-  return blocks
-    .map((block) => {
-      const text = block.text
-        .replace(/<[^>]*>/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim();
-      return block.title ? `${block.title} ${text}` : text;
-    })
-    .join(' ')
-    .trim();
 }

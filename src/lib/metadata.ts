@@ -1,9 +1,6 @@
 import { getURL } from '../utils/helpers';
 
-export const SITE_NAME = 'DS5 Construction';
 export const DEFAULT_OG_IMAGE = '/photo/hero.webp';
-export const OG_IMAGE_WIDTH = 1200;
-export const OG_IMAGE_HEIGHT = 630;
 
 export function absoluteUrl(path: string = ''): string {
   const normalized = path.replace(/^\/+/, '');
@@ -20,17 +17,15 @@ export function ogImageUrl(
   );
 }
 
+import type { HeroImageRenderData } from '../utils/hero-image';
+
 export type PageMetadata = {
   title: string;
   description: string;
   canonical?: string;
   image?: string;
-  /** Optimized LCP image for <link rel="preload"> */
-  preloadImage?: {
-    href: string;
-    srcset: string;
-    sizes: string;
-  };
+  /** Optimized LCP image for <link rel="preload"> — same URLs as hero <img> */
+  preloadImage?: HeroImageRenderData;
 };
 
 export function buildPageMetadata({

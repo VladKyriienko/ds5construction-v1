@@ -1,4 +1,5 @@
 import type { LightboxState } from './lightbox';
+import './open-lightbox-triggers.ts';
 
 let lightboxPromise: Promise<
   typeof import('./lightbox')

@@ -6,11 +6,11 @@ import {
   CONTACT_MESSAGE_MAX,
   CONTACT_PHONE_MAX_CHARS,
   CONTACT_SECOND_NAME_MAX,
-} from '../lib/contact-form-validation';
+} from '../lib/contact-form-fields';
 
 interface Props {
   idPrefix?: string;
-  /** Defer JS until quote popup opens (popup forms only). */
+  /** Defer JS until the form is near the viewport or opened (popup). */
   lazy?: boolean;
 }
 
@@ -18,7 +18,11 @@ const { idPrefix = '', lazy = false } = Astro.props;
 const id = (name: string) => `${idPrefix}${name}`;
 ---
 
-<form data-contact-form class="space-y-3 sm:space-y-4">
+<form
+  data-contact-form
+  data-contact-form-lazy={lazy || undefined}
+  class="space-y-3 sm:space-y-4"
+>
   <p data-form-error class="text-sm text-destructive hidden" role="alert"></p>
 
   <div data-form-fields class="space-y-3 sm:space-y-4">

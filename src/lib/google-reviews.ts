@@ -16,15 +16,26 @@ type PlaceReview = {
   text?: { text?: string } | string;
   authorAttribution?: { displayName?: string };
   relativePublishTimeDescription?: string;
+  rating?: number;
 };
 
 type PlaceDetailsResponse = {
+  rating?: number;
+  userRatingCount?: number;
   reviews?: PlaceReview[];
 };
 
 type ReviewsCacheFile = {
   fetchedAt: string;
+  rating?: number;
+  reviewCount?: number;
   items: GoogleReviewItem[];
+};
+
+export type GoogleReviewsSchemaData = {
+  rating?: number;
+  reviewCount?: number;
+  reviews: GoogleReviewItem[];
 };
 
 function normalizePlaceId(placeId: string): string {
@@ -34,24 +45,41 @@ function normalizePlaceId(placeId: string): string {
   return trimmed;
 }
 
-function readReviewsCache(): GoogleReviewItem[] {
-  if (!existsSync(CACHE_PATH)) return [];
+function readReviewsCacheFile(): ReviewsCacheFile | null {
+  if (!existsSync(CACHE_PATH)) return null;
 
   try {
-    const data = JSON.parse(
+    return JSON.parse(
       readFileSync(CACHE_PATH, 'utf8'),
     ) as ReviewsCacheFile;
-    return Array.isArray(data.items) ? data.items : [];
   } catch {
-    return [];
+    return null;
   }
+}
+
+function readReviewsCache(): GoogleReviewItem[] {
+  const data = readReviewsCacheFile();
+  return Array.isArray(data?.items) ? data.items : [];
+}
+
+export function readGoogleReviewsSchemaData(): GoogleReviewsSchemaData {
+  const data = readReviewsCacheFile();
+  return {
+    rating: data?.rating,
+    reviewCount: data?.reviewCount,
+    reviews: Array.isArray(data?.items) ? data.items : [],
+  };
 }
 
 function writeReviewsCache(
   items: GoogleReviewItem[],
+  rating?: number,
+  reviewCount?: number,
 ): void {
   const payload: ReviewsCacheFile = {
     fetchedAt: new Date().toISOString(),
+    ...(rating !== undefined ? { rating } : {}),
+    ...(reviewCount !== undefined ? { reviewCount } : {}),
     items,
   };
   writeFileSync(
@@ -63,7 +91,11 @@ function writeReviewsCache(
 async function fetchGoogleReviewsUncached(
   placeId: string,
   apiKey: string,
-): Promise<GoogleReviewItem[]> {
+): Promise<{
+  items: GoogleReviewItem[];
+  rating?: number;
+  reviewCount?: number;
+}> {
   const rawId = normalizePlaceId(placeId);
   const url = `https://places.googleapis.com/v1/places/${encodeURIComponent(rawId)}`;
   const res = await fetch(url, {
@@ -71,7 +103,7 @@ async function fetchGoogleReviewsUncached(
     headers: {
       'Content-Type': 'application/json',
       'X-Goog-Api-Key': apiKey.trim(),
-      'X-Goog-FieldMask': 'reviews',
+      'X-Goog-FieldMask': 'reviews,rating,userRatingCount',
     },
   });
   const errText = await res.text();
@@ -100,10 +132,21 @@ async function fetchGoogleReviewsUncached(
     const project =
       r.relativePublishTimeDescription ?? 'Google';
     if (!quote.trim()) continue;
-    items.push({ quote, author, project });
+    items.push({
+      quote,
+      author,
+      project,
+      ...(typeof r.rating === 'number'
+        ? { rating: r.rating }
+        : {}),
+    });
   }
 
-  return items;
+  return {
+    items,
+    rating: data.rating,
+    reviewCount: data.userRatingCount,
+  };
 }
 
 export async function getGoogleReviews(): Promise<
@@ -119,8 +162,11 @@ export async function getGoogleReviews(): Promise<
   if (!key || !id) return cached;
 
   try {
-    const items = await fetchGoogleReviewsUncached(id, key);
-    if (items.length > 0) writeReviewsCache(items);
+    const { items, rating, reviewCount } =
+      await fetchGoogleReviewsUncached(id, key);
+    if (items.length > 0) {
+      writeReviewsCache(items, rating, reviewCount);
+    }
     return items;
   } catch (err) {
     console.error(

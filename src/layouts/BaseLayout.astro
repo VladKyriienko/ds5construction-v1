@@ -42,8 +42,10 @@ const { title, description, canonical, image } = metadata;
     <link rel="icon" type="image/png" href="/icons/image.png" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
+    {canonical && <meta property="og:url" content={canonical} />}
     {image && <meta property="og:image" content={image} />}
     <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_GB" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
@@ -52,7 +54,7 @@ const { title, description, canonical, image } = metadata;
       <link
         rel="preload"
         as="image"
-        href={metadata.preloadImage.href}
+        href={metadata.preloadImage.src}
         imagesrcset={metadata.preloadImage.srcset}
         imagesizes={metadata.preloadImage.sizes}
         fetchpriority="high"

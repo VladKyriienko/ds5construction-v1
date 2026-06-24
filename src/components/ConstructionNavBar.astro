@@ -1,13 +1,12 @@
 ---
 import { cn } from '../utils/cn';
 import { NAV_LINKS, SHOW_DARK_MODE_TOGGLE } from '../config/siteConfig';
+import type { ConstructionNavBarProps } from '../types';
 import Icon from './common/Icon.astro';
 import Button from './common/Button.astro';
 import QuoteButton from './QuoteButton.astro';
 
-interface Props {
-  showDarkModeToggle?: boolean;
-}
+interface Props extends ConstructionNavBarProps {}
 
 const { showDarkModeToggle = SHOW_DARK_MODE_TOGGLE } = Astro.props;
 const pathname = Astro.url.pathname;
@@ -80,9 +79,8 @@ const mobileLinkClass = (active: boolean) =>
         showDarkModeToggle && (
           <Button
             variant="ghost"
-            size="sm"
+            size="icon"
             data-theme-toggle
-            class="h-9 w-9 p-0"
             aria-label="Toggle theme"
           >
             <Icon name="Moon" class="h-5 w-5 dark:hidden" />
@@ -98,9 +96,8 @@ const mobileLinkClass = (active: boolean) =>
         showDarkModeToggle && (
           <Button
             variant="ghost"
-            size="sm"
+            size="icon"
             data-theme-toggle
-            class="h-9 w-9 p-0"
             aria-label="Toggle theme"
           >
             <Icon name="Moon" class="h-5 w-5 dark:hidden" />
@@ -110,11 +107,11 @@ const mobileLinkClass = (active: boolean) =>
       }
       <Button
         variant="ghost"
-        size="sm"
+        size="icon"
         data-mobile-menu-toggle
         aria-expanded="false"
         aria-label="Open menu"
-        class="relative h-9 w-9 shrink-0 p-0 [&_svg]:size-5!"
+        class="relative shrink-0 [&_svg]:size-5!"
       >
         <span
           data-menu-icon

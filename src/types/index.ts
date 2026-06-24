@@ -90,7 +90,6 @@ export type ValidLucideIconName =
   | 'ClipboardList'
   | 'Coins'
   | 'Facebook'
-  | 'HelpCircle'
   | 'Home'
   | 'Instagram'
   | 'Lightbulb'
@@ -123,15 +122,19 @@ export type TestimonialItem = {
   quote: string;
   author: string;
   project: string;
+  rating?: number;
 };
 
 export type GoogleReviewItem = TestimonialItem;
 
 export type MutedSectionVariant = 'default' | 'muted';
-export type SectionVariant = MutedSectionVariant | 'tight';
+export type SectionVariant =
+  | MutedSectionVariant
+  | 'tight'
+  | 'title';
 export type WhyWorkWithUsVariant = MutedSectionVariant;
 
-export type { ContactFormPayload } from '../lib/contact-form-validation';
+export type { ContactFormPayload } from '../lib/contact-form-fields';
 
 export type SectionProps = {
   id?: string;
@@ -180,10 +183,13 @@ export type ConstructionNavBarProps = {
   showDarkModeToggle?: boolean;
 };
 
+import type { HeroImageRenderData } from '../utils/hero-image';
+
 export type ConstructionHomeProps = {
   projects: ProjectWithCleanDescription[];
   services: Service[];
   googleReviews?: TestimonialItem[] | null;
+  heroImage: HeroImageRenderData;
 };
 
 export type PublicLayoutProps = {

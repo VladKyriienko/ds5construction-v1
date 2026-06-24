@@ -8,7 +8,7 @@
   <button
     type="button"
     data-lightbox-backdrop
-    class="absolute inset-0"
+    class="absolute inset-0 z-0"
     aria-label="Close lightbox"
   ></button>
   <button
@@ -22,7 +22,7 @@
   <button
     type="button"
     data-lightbox-prev
-    class="absolute left-2 top-1/2 z-10 flex size-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/15 text-white transition-colors hover:bg-white/25 md:left-4 md:size-14"
+    class="absolute left-2 top-1/2 z-20 flex size-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/15 text-white transition-colors hover:bg-white/25 md:left-4 md:size-14"
     aria-label="Previous image"
   >
     ‹
@@ -30,13 +30,13 @@
   <button
     type="button"
     data-lightbox-next
-    class="absolute right-2 top-1/2 z-10 flex size-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/15 text-white transition-colors hover:bg-white/25 md:right-4 md:size-14"
+    class="absolute right-2 top-1/2 z-20 flex size-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/15 text-white transition-colors hover:bg-white/25 md:right-4 md:size-14"
     aria-label="Next image"
   >
     ›
   </button>
-  <div class="relative z-10 flex h-dvh w-full items-stretch overflow-hidden p-0">
-    <div class="h-full w-full overflow-hidden">
+  <div class="relative z-10 flex h-dvh w-full touch-pan-y items-stretch overflow-hidden p-0 pointer-events-none">
+    <div class="pointer-events-auto h-full w-full overflow-hidden">
       <div data-lightbox-track class="flex h-full ease-out"></div>
     </div>
   </div>
