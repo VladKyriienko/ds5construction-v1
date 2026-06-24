@@ -4,6 +4,7 @@ import {
   SOCIAL_INSTAGRAM_URL,
   SOCIAL_YOUTUBE_URL,
 } from '../config/siteConfig';
+import type { GoogleReviewsSchemaData } from './google-reviews';
 import { absoluteUrl } from './metadata';
 
 const BUSINESS = {
@@ -16,8 +17,10 @@ const BUSINESS = {
   addressCountry: 'GB',
 } as const;
 
-export function getLocalBusinessJsonLd() {
-  return {
+export function getLocalBusinessJsonLd(
+  reviewData?: GoogleReviewsSchemaData,
+) {
+  const jsonLd: Record<string, unknown> = {
     '@context': 'https://schema.org',
     '@type': 'GeneralContractor',
     name: BUSINESS.name,
@@ -43,4 +46,44 @@ export function getLocalBusinessJsonLd() {
     ],
     hasMap: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(GOOGLE_MAPS_LOCATION_QUERY)}`,
   };
+
+  if (
+    reviewData?.rating !== undefined &&
+    reviewData.reviewCount !== undefined &&
+    reviewData.reviewCount > 0
+  ) {
+    jsonLd.aggregateRating = {
+      '@type': 'AggregateRating',
+      ratingValue: reviewData.rating,
+      reviewCount: reviewData.reviewCount,
+      bestRating: 5,
+      worstRating: 1,
+    };
+  }
+
+  if (reviewData?.reviews.length) {
+    jsonLd.review = reviewData.reviews.map((item) => {
+      const review: Record<string, unknown> = {
+        '@type': 'Review',
+        author: {
+          '@type': 'Person',
+          name: item.author,
+        },
+        reviewBody: item.quote,
+      };
+
+      if (item.rating !== undefined) {
+        review.reviewRating = {
+          '@type': 'Rating',
+          ratingValue: item.rating,
+          bestRating: 5,
+          worstRating: 1,
+        };
+      }
+
+      return review;
+    });
+  }
+
+  return jsonLd;
 }

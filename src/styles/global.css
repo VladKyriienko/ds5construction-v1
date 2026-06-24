@@ -205,7 +205,7 @@ p a {
 @keyframes fade-in-up {
   from {
     opacity: 0;
-    transform: translateY(30vh);
+    transform: translateY(20vh);
   }
 
   to {

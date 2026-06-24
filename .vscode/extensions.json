@@ -1,4 +1,7 @@
 #:schema node_modules/@astrojs/language-server/astro-config-schema.json
 {
-  "recommendations": ["astro-build.astro-vscode"]
+  "recommendations": [
+    "astro-build.astro-vscode",
+    "bradlc.vscode-tailwindcss"
+  ]
 }

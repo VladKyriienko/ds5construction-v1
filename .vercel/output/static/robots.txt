@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: http://localhost:4321/sitemap.xml
+Sitemap: https://ds5construction.com/sitemap.xml

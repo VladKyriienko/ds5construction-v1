@@ -12,13 +12,27 @@ export const HERO_IMAGE = {
   sizes: IMAGE_SIZES.heroContainer,
 } as const;
 
+export type HeroImageRenderData = {
+  src: string;
+  srcset: string;
+  width: number;
+  height: number;
+  sizes: string;
+};
+
+export type HeroImageData = {
+  preload: HeroImageRenderData;
+  img: HeroImageRenderData;
+};
+
 function heroHeightForWidth(width: number): number {
   return Math.round(
     (HERO_IMAGE.height * width) / HERO_IMAGE.width,
   );
 }
 
-export async function getHeroPreloadImage() {
+/** Single source of truth for hero preload + <img> (avoids dev/prod URL mismatch). */
+export async function getHeroImageData(): Promise<HeroImageData> {
   const srcsetEntries = await Promise.all(
     HERO_IMAGE.widths.map(async (width) => {
       const { src } = await getImage({
@@ -32,7 +46,9 @@ export async function getHeroPreloadImage() {
     }),
   );
 
-  const { src: href } = await getImage({
+  const srcset = srcsetEntries.join(', ');
+
+  const { src } = await getImage({
     src: heroImageSrc,
     width: HERO_IMAGE.width,
     height: HERO_IMAGE.height,
@@ -40,9 +56,26 @@ export async function getHeroPreloadImage() {
     quality: HERO_IMAGE.quality,
   });
 
-  return {
-    href,
-    srcset: srcsetEntries.join(', '),
+  const render: HeroImageRenderData = {
+    src,
+    srcset,
+    width: HERO_IMAGE.width,
+    height: HERO_IMAGE.height,
     sizes: HERO_IMAGE.sizes,
+  };
+
+  return {
+    preload: render,
+    img: render,
+  };
+}
+
+/** @deprecated Use getHeroImageData() */
+export async function getHeroPreloadImage() {
+  const { preload } = await getHeroImageData();
+  return {
+    href: preload.src,
+    srcset: preload.srcset,
+    sizes: preload.sizes,
   };
 }

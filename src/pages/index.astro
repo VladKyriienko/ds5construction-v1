@@ -7,14 +7,14 @@ import { buildPageMetadata } from '../lib/metadata';
 import { getFeaturedProjects, getServices } from '../utils/data';
 import { getGoogleReviews } from '../lib/google-reviews';
 import { COMING_SOON } from '../config/siteConfig';
-import { getHeroPreloadImage } from '../utils/hero-image';
+import { getHeroImageData } from '../utils/hero-image';
 
 const homeOgImage =
   '/photo/projects/beckenham-drive/gallery/MClayton_2602-5-DS5-BEC_036.webp';
 
-const heroPreload = COMING_SOON
+const heroImageData = COMING_SOON
   ? undefined
-  : await getHeroPreloadImage();
+  : await getHeroImageData();
 
 const metadata = {
   ...buildPageMetadata({
@@ -27,7 +27,7 @@ const metadata = {
     path: '',
     image: COMING_SOON ? undefined : homeOgImage,
   }),
-  preloadImage: heroPreload,
+  preloadImage: heroImageData?.preload,
 };
 
 const [projects, services, googleReviews] = await Promise.all([
@@ -45,6 +45,7 @@ const [projects, services, googleReviews] = await Promise.all([
           projects={projects}
           services={services}
           googleReviews={googleReviews}
+          heroImage={heroImageData!.img}
         />
         <Lightbox />
       </PublicLayout>
