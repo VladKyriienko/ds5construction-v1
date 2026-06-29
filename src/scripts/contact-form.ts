@@ -126,11 +126,16 @@ function initContactForms() {
         }
 
         try {
-          const res = await fetch('/api/contact', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(parsed.data),
-          });
+          const res = await fetch(
+            `${import.meta.env.BASE_URL}api/contact`,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(parsed.data),
+            },
+          );
           const data = (await res
             .json()
             .catch(() => ({}))) as {

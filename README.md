@@ -52,7 +52,21 @@ Copy `.env.example` to `.env` and fill in values for contact form (Resend) and G
 
 ## Deployment
 
-### Vercel (recommended)
+### GitHub Pages
+
+Workflow `deploy.yml` publishes to **GitHub Pages** on push to `production`:
+
+- **URL:** https://vladkyriienko.github.io/ds5construction-v1/
+- **Artifact:** `./dist` (Astro static output)
+
+One-time setup in the repository:
+
+1. **Settings → Pages → Build and deployment → Source:** GitHub Actions
+2. Push to `production` (or run the workflow manually via **Actions → Deploy to GitHub Pages → Run workflow**)
+
+The GitHub Pages build sets `GITHUB_PAGES=true`, `ASTRO_BASE=/ds5construction-v1`, and skips the Vercel adapter. The contact form API does not work on GitHub Pages (static hosting only).
+
+### Vercel (production site)
 
 1. Import the repository in Vercel
 2. Framework preset: **Astro**
@@ -60,15 +74,11 @@ Copy `.env.example` to `.env` and fill in values for contact form (Resend) and G
 4. Build command: `bun run build`
 5. Output directory: `dist`
 
-`vercel.json` is included.
+`vercel.json` is included. Do **not** set `GITHUB_PAGES` in Vercel env vars.
 
 ### GitHub Actions
 
-Workflows in `.github/workflows/`:
-
 - **CI** (`ci.yml`) — runs `bun run build` on every push and pull request
-- **Deploy** (`deploy.yml`) — runs `bun run build` on push to `production` before Vercel deploys
+- **Deploy** (`deploy.yml`) — builds and deploys to GitHub Pages on push to `production`
 
-Production deployment is handled by **Vercel Git integration** (connect the repo in Vercel and set the production branch to `production`). No GitHub secrets are required for Actions.
-
-Set production environment variables (Resend, Google Places, etc.) in the Vercel project dashboard.
+Set production environment variables (Resend, Google Places, etc.) in the Vercel project dashboard for the live site at ds5construction.com.
