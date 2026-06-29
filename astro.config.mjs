@@ -3,17 +3,24 @@ import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import vercel from '@astrojs/vercel';
 
+const isGitHubPages = process.env.GITHUB_PAGES === 'true';
+
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://ds5construction.com',
+  site:
+    process.env.PUBLIC_SITE_URL?.trim() ||
+    'https://ds5construction.com',
+  base: process.env.ASTRO_BASE?.trim() || '/',
   output: 'static',
-  adapter: vercel(),
+  ...(isGitHubPages ? {} : { adapter: vercel() }),
   image: {
     layout: 'constrained',
   },
-  redirects: {
-    '/services': '/our-services',
-  },
+  redirects: isGitHubPages
+    ? {}
+    : {
+        '/services': '/our-services',
+      },
   vite: {
     plugins: [tailwindcss()],
     server: {

@@ -7,9 +7,14 @@ import {
   verifyEmailDomainAcceptsMail,
 } from '../../lib/email-domain-dns';
 
-export const prerender = false;
+export const prerender =
+  process.env.GITHUB_PAGES === 'true';
 
-const resend = new Resend(import.meta.env.RESEND_API_KEY);
+function getResend(): Resend | null {
+  const apiKey = import.meta.env.RESEND_API_KEY;
+  if (!apiKey) return null;
+  return new Resend(apiKey);
+}
 const CONTACT_EMAIL = 'info@DS5construction.co.uk';
 const FROM_EMAIL =
   import.meta.env.RESEND_FROM_EMAIL ??
@@ -38,7 +43,8 @@ function buildEmailHtml(body: ContactFormPayload): string {
 }
 
 export const POST: APIRoute = async ({ request }) => {
-  if (!import.meta.env.RESEND_API_KEY) {
+  const resend = getResend();
+  if (!resend) {
     return new Response(
       JSON.stringify({ error: 'Email is not configured' }),
       {
