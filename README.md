@@ -69,13 +69,15 @@ Workflows in `.github/workflows/`:
 - **CI** (`ci.yml`) — runs `bun run build` on every push and pull request
 - **Deploy** (`deploy.yml`) — deploys to Vercel production on push to `main`
 
-Add these repository secrets in GitHub (**Settings → Secrets and variables → Actions**):
+Add these **repository** secrets in GitHub (**Settings → Secrets and variables → Actions → New repository secret**):
 
-| Secret              | Where to find it                                                       |
-| ------------------- | ---------------------------------------------------------------------- |
-| `VERCEL_TOKEN`      | [Vercel account tokens](https://vercel.com/account/tokens)             |
-| `VERCEL_ORG_ID`     | `.vercel/project.json` after `vercel link`, or Vercel project settings |
-| `VERCEL_PROJECT_ID` | `.vercel/project.json` after `vercel link`, or Vercel project settings |
+| Secret              | Value                                                                                                         |
+| ------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `VERCEL_TOKEN`      | Create at [vercel.com/account/tokens](https://vercel.com/account/tokens) (scope: full account or team access) |
+| `VERCEL_ORG_ID`     | `team_ys6d9h9x6JgPvZZ6lJwoKTgA`                                                                               |
+| `VERCEL_PROJECT_ID` | `prj_jK5lYW7JxI9MpXxnrmd6SxMlbOEG`                                                                            |
+
+`VERCEL_TOKEN` must be set — without it the deploy job fails with `missing a value` for `--token`.
 
 Set production environment variables (Resend, Google Places, etc.) in the Vercel project dashboard — `vercel pull` in the deploy workflow loads them at build time.
 
