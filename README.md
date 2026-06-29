@@ -61,3 +61,24 @@ Copy `.env.example` to `.env` and fill in values for contact form (Resend) and G
 5. Output directory: `dist`
 
 `vercel.json` is included.
+
+### GitHub Actions
+
+Workflows in `.github/workflows/`:
+
+- **CI** (`ci.yml`) — runs `bun run build` on every push and pull request
+- **Deploy** (`deploy.yml`) — deploys to Vercel production on push to `production`
+
+Add these **repository** secrets in GitHub (**Settings → Secrets and variables → Actions → New repository secret**):
+
+| Secret              | Value                                                                                                         |
+| ------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `VERCEL_TOKEN`      | Create at [vercel.com/account/tokens](https://vercel.com/account/tokens) (scope: full account or team access) |
+| `VERCEL_ORG_ID`     | `team_ys6d9h9x6JgPvZZ6lJwoKTgA`                                                                               |
+| `VERCEL_PROJECT_ID` | `prj_jK5lYW7JxI9MpXxnrmd6SxMlbOEG`                                                                            |
+
+`VERCEL_TOKEN` must be set — without it the deploy job fails with `missing a value` for `--token`.
+
+Set production environment variables (Resend, Google Places, etc.) in the Vercel project dashboard — `vercel pull` in the deploy workflow loads them at build time.
+
+Optional: create a GitHub **production** environment for deployment approvals or branch protection.
