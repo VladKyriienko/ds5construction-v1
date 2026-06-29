@@ -67,7 +67,7 @@ Copy `.env.example` to `.env` and fill in values for contact form (Resend) and G
 Workflows in `.github/workflows/`:
 
 - **CI** (`ci.yml`) — runs `bun run build` on every push and pull request
-- **Deploy** (`deploy.yml`) — deploys to Vercel production on push to `main`
+- **Deploy** (`deploy.yml`) — deploys to Vercel production on push to `production`
 
 Add these **repository** secrets in GitHub (**Settings → Secrets and variables → Actions → New repository secret**):
 
