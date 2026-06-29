@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://ds5construction.com/sitemap.xml
