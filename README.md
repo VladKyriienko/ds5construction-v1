@@ -74,7 +74,7 @@ The GitHub Pages build sets `GITHUB_PAGES=true`, `ASTRO_BASE=/ds5construction-v1
 4. Build command: `bun run build`
 5. Output directory: `dist`
 
-`vercel.json` is included. Do **not** set `GITHUB_PAGES` in Vercel env vars.
+`vercel.json` is included. Do **not** commit `.vercel/` — Vercel builds from source. If `.vercel/output` is in git, Vercel skips the build and may serve broken assets (e.g. missing CSS).
 
 ### GitHub Actions
 

@@ -1,7 +1,6 @@
 {
   "installCommand": "bun install",
   "buildCommand": "bun run build",
-  "outputDirectory": "dist",
   "framework": "astro",
   "env": {
     "PUBLIC_SITE_URL": "https://ds5construction.com"
